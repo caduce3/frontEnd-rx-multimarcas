@@ -17,17 +17,19 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Link, useNavigate } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
-import { registerUser } from "@/api/register-user"
+import { registerFuncionario } from "@/api/register-funcionario"
+import logo from "../../assets/logoRXmulti.png";
 
 // Define the schema for the sign-up form
 const signUpSchema = z.object({
-  name: z.string().min(4, { message: "O nome deve ter pelo menos 4 caracteres." }),
-  gender: z.enum(["masculino", "feminino"], { message: "O gênero deve ser 'masculino' ou 'feminino'." }),
+  nome: z.string().min(4, { message: "O nome deve ter pelo menos 4 caracteres." }),
   email: z.string().email({ message: "Endereço de e-mail inválido." }),
-  password: z.string().min(6, { message: "A senha deve ter pelo menos 6 caracteres." })
+  senha: z.string().min(6, { message: "A senha deve ter pelo menos 6 caracteres." }),
+  cpf: z.string().length(14, { message: "O CPF deve estar no formato XXX.XXX.XXX-XX." }),
+  telefone: z.string().length(15, { message: "O telefone deve estar no formato (XX) XXXXX-XXXX." }),
+  genero: z.string().optional(),
 });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
@@ -36,31 +38,33 @@ export function SignUp() {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      name: "",
-      gender: undefined,
+      nome: "",
       email: "",
-      password: "",
+      senha: "",
+      cpf: "",
+      telefone: ""
     },
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate();
 
-  const { mutateAsync: registerUserFn } = useMutation({
-    mutationFn: registerUser,
+  const { mutateAsync: registerFuncionarioFn } = useMutation({
+    mutationFn: registerFuncionario,
   })
 
   async function onSubmit(values: SignUpFormValues) {
     setIsSubmitting(true)
     try {
-      await registerUserFn({ 
-        name: values.name, 
+      await registerFuncionarioFn({ 
+        nome: values.nome, 
         email: values.email, 
-        password: values.password,
-        gender: values.gender
+        senha: values.senha,
+        cpf: values.cpf,
+        telefone: values.telefone
       });
 
-      toast.success("Usuário criado com sucesso! Entre em contato com o time de desenvolvimento para liberar sua conta.")
+      toast.success("Colaborador criado com sucesso! Entre em contato com o time de desenvolvimento para liberar sua conta.")
       form.reset();
       navigate(`/sign-in?email=${values.email}`);
 
@@ -73,46 +77,37 @@ export function SignUp() {
     }
   }
 
+  function formatCPF(cpf: string) {
+    return cpf
+      .replace(/\D/g, "")
+      .replace(/^(\d{3})(\d)/, "$1.$2")
+      .replace(/\.(\d{3})(\d)/, ".$1.$2")
+      .replace(/\.(\d{3})(\d)/, ".$1-$2")
+      .replace(/(-\d{2})\d+$/, "$1");
+  }
+
+  function formatTelefone(telefone: string) {
+    return telefone
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1 max-w-[450px] flex flex-col justify-center gap-6 ">
-        <div className="max-w-[450px] flex flex-col justify-center gap-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">Criar conta</h1>
-            <p className="text-sm text-muted-foreground">Crie sua conta para ter acesso ao painel da trofeu.bet!</p>
-        </div>
-        
+      <div className="">
+            <img src={logo} alt="RX Multimarcas" className="h-48 mb-4"/>
+      </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1 max-w-[450px] flex flex-col justify-center gap-6">
         {/* Name Field */}
         <FormField
           control={form.control}
-          name="name"
+          name="nome"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input placeholder="Seu nome" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Gender Field */}
-        <FormField
-          control={form.control}
-          name="gender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Gênero</FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o gênero" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="masculino">Masculino</SelectItem>
-                    <SelectItem value="feminino">Feminino</SelectItem>
-                  </SelectContent>
-                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -127,7 +122,7 @@ export function SignUp() {
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input placeholder="trofeu.bet@gmail.com" {...field} />
+                <Input placeholder="rxmultimarcas@gmail.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -137,12 +132,42 @@ export function SignUp() {
         {/* Password Field */}
         <FormField
           control={form.control}
-          name="password"
+          name="senha"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
                 <Input type="password" placeholder="********" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* CPF Field */}
+        <FormField
+          control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>CPF</FormLabel>
+              <FormControl>
+                <Input placeholder="XXX.XXX.XXX-XX" value={formatCPF(field.value)} onChange={(e) => field.onChange(e.target.value)} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Phone Field */}
+        <FormField
+          control={form.control}
+          name="telefone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone</FormLabel>
+              <FormControl>
+                <Input placeholder="(XX) XXXXX-XXXX" value={formatTelefone(field.value)} onChange={(e) => field.onChange(e.target.value)} />
               </FormControl>
               <FormMessage />
             </FormItem>

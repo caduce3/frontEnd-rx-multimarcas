@@ -2,12 +2,12 @@ import { api } from "@/lib/axios";
 
 export interface SignInBody {
     email: string;
-    password: string;
+    senha: string;
 }
 
-export async function signIn({ email, password }: SignInBody) {
+export async function signIn({ email, senha }: SignInBody) {
     try {
-        const response = await api.post('/sessions', { email, password });
+        const response = await api.post('/sessions', { email, senha });
         return response.data.token;
     } catch (error: any) {
         if (error.response) {

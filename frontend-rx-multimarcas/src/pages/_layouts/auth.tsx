@@ -13,7 +13,7 @@ export function AuthLayout() {
             </div>
 
             <footer className="mt-5">
-                Painel do usuário &copy; trofeu.bet - {new Date().getFullYear()}
+                Desenvolvido por &copy; Cadu Lucena - {new Date().getFullYear()}
             </footer>
         </div>
     )
