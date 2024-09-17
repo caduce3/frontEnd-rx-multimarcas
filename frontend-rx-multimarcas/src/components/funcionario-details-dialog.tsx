@@ -6,86 +6,86 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { updateUserProfile } from "@/api/update-profile-user";
+import { updateFuncionarioProfile } from "@/api/update-profile-funcionario";
 import { toast } from "sonner";
-import { getDetailsUser, GetUniqueUserResponse } from "@/api/get-unique-user";
+import { getDetailsFuncionario, GetUniqueFuncionarioResponse } from "@/api/get-unique-funcionario";
 import { useNavigate } from "react-router-dom";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Skeleton } from "./ui/skeleton";
 import { useEffect } from "react";
 
-const userDetailsSchema = z.object({
-    name: z.string().min(4),
+const funcionarioDetailsSchema = z.object({
+    nome: z.string().min(4),
     email: z.string().email(),
-    status: z.enum(["ACTIVE", "INACTIVE"]),
-    sector: z.enum(["RISCO", "DESENVOLVIMENTO", "TRAFEGO", "FINANCEIRO", "GERENCIAL", "USER", "AFILIADOS"]),
+    status: z.enum(["ATIVO", "INATIVO"]),
+    cargo: z.enum(["PROPRIETARIO", "ADMINISTRADOR", "COLABORADOR"]),
 });
 
-type UserDetailsSchema = z.infer<typeof userDetailsSchema>;
+type FuncionarioDetailsSchema = z.infer<typeof funcionarioDetailsSchema>;
 
-interface UserDetailsDialogProps {
+interface FuncionarioDetailsDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    userId: string;
+    funcionarioId: string;
 }
 
-export function UserDetailsDialog({ isOpen, onClose, userId }: UserDetailsDialogProps) {
+export function FuncionarioDetailsDialog({ isOpen, onClose, funcionarioId }: FuncionarioDetailsDialogProps) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data: detailsUser, isLoading } = useQuery({
-        queryKey: ['detailsUser', userId],
+    const { data: detailsFuncionario, isLoading } = useQuery({
+        queryKey: ['detailsFuncionario', funcionarioId],
         queryFn: async () => {
-            if (!userId) {
-                navigate(`/users`);
-                toast.error(`Jogador não encontrado`);
-                return Promise.reject("ID do jogador não encontrado");
+            if (!funcionarioId) {
+                navigate(`/funcionarios`);
+                toast.error(`Funcionário não encontrado`);
+                return Promise.reject("ID do Funcionário não encontrado");
             }
-            return getDetailsUser({ id: userId });
+            return getDetailsFuncionario({ id: funcionarioId });
         },
-        enabled: !!userId,
+        enabled: !!funcionarioId,
     });
 
-    const { register, handleSubmit, formState: { isSubmitting }, setValue, watch, reset } = useForm<UserDetailsSchema>({
-        resolver: zodResolver(userDetailsSchema),
+    const { register, handleSubmit, formState: { isSubmitting }, setValue, watch, reset } = useForm<FuncionarioDetailsSchema>({
+        resolver: zodResolver(funcionarioDetailsSchema),
     });
 
     useEffect(() => {
-        if (detailsUser) {
+        if (detailsFuncionario) {
             reset({
-                name: detailsUser.user.name,
-                email: detailsUser.user.email,
-                status: detailsUser.user.status,
-                sector: detailsUser.user.sector,
+                nome: detailsFuncionario.funcionario.nome,
+                email: detailsFuncionario.funcionario.email,
+                status: detailsFuncionario.funcionario.status,
+                cargo: detailsFuncionario.funcionario.cargo,
             });
         }
-    }, [detailsUser, reset]);
+    }, [detailsFuncionario, reset]);
 
-    const { mutateAsync: updateUserDetailsFn } = useMutation({
-        mutationFn: updateUserProfile,
-        onSuccess(_, { id, name, email, status, sector }) {
-            const cached = queryClient.getQueryData<GetUniqueUserResponse>(['detailsUser']);
+    const { mutateAsync: updateFuncionarioDetailsFn } = useMutation({
+        mutationFn: updateFuncionarioProfile,
+        onSuccess(_, { id, nome, email, status, cargo }) {
+            const cached = queryClient.getQueryData<GetUniqueFuncionarioResponse>(['detailsFuncionario']);
             if (cached) {
-                queryClient.setQueryData(['detailsUser', id], {
+                queryClient.setQueryData(['detailsFuncionario', id], {
                     id,
-                    name,
+                    nome,
                     email,
                     status,
-                    sector,
+                    cargo,
                 });
             }
-            queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("users") });
+            queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("funcionarios") });
         },
     });
 
-    async function handleSubmitUserDetails(data: UserDetailsSchema) {
+    async function handleSubmitFuncionarioDetails(data: FuncionarioDetailsSchema) {
         try {
-            await updateUserDetailsFn({
-                id: detailsUser?.user.id ?? '',
-                name: data.name,
+            await updateFuncionarioDetailsFn({
+                id: detailsFuncionario?.funcionario.id ?? '',
+                nome: data.nome,
                 email: data.email,
                 status: data.status,
-                sector: data.sector,
+                cargo: data.cargo,
             });
             toast.success("Perfil atualizado com sucesso!");
             onClose();
@@ -104,7 +104,7 @@ export function UserDetailsDialog({ isOpen, onClose, userId }: UserDetailsDialog
                     <DialogDescription>Atualize as informações de usuário.</DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(handleSubmitUserDetails)}>
+                <form onSubmit={handleSubmit(handleSubmitFuncionarioDetails)}>
                     <div className="space-y-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label className="text-right" htmlFor="name-user">
@@ -113,7 +113,7 @@ export function UserDetailsDialog({ isOpen, onClose, userId }: UserDetailsDialog
                             {isLoading ? 
                                 <Skeleton className="h-[30px] w-[300px]"/> 
                             : 
-                                <Input className="col-span-3" id="name-user" {...register('name')} />
+                                <Input className="col-span-3" id="name-user" {...register('nome')} />
                             }
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -133,36 +133,32 @@ export function UserDetailsDialog({ isOpen, onClose, userId }: UserDetailsDialog
                             {isLoading ? 
                                 <Skeleton className="h-[30px] w-[100px]"/> 
                                 :
-                                <Select onValueChange={(value) => setValue('status', value as UserDetailsSchema['status'])} value={watch('status')}>
+                                <Select onValueChange={(value) => setValue('status', value as FuncionarioDetailsSchema['status'])} value={watch('status')}>
                                     <SelectTrigger id="status-user">
                                         <SelectValue placeholder="Selecione o status" />
                                     </SelectTrigger>
                                     <SelectContent position="popper">
-                                        <SelectItem value="ACTIVE">Ativo</SelectItem>
-                                        <SelectItem value="INACTIVE">Inativo</SelectItem>
+                                        <SelectItem value="ATIVO">Ativo</SelectItem>
+                                        <SelectItem value="INATIVO">Inativo</SelectItem>
                                     </SelectContent>
                                 </Select>
                             }
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label className="text-right" htmlFor="sector-user">
-                                Setor
+                                Cargo
                             </Label>
                             {isLoading ? 
                                 <Skeleton className="h-[30px] w-[100px]"/> 
                                 :
-                                <Select onValueChange={(value) => setValue('sector', value as UserDetailsSchema['sector'])} value={watch('sector')}>
-                                    <SelectTrigger id="sector-user">
+                                <Select onValueChange={(value) => setValue('cargo', value as FuncionarioDetailsSchema['cargo'])} value={watch('cargo')}>
+                                    <SelectTrigger id="cargo-user">
                                         <SelectValue placeholder="Selecione um setor" />
                                     </SelectTrigger>
                                     <SelectContent position="popper">
-                                        <SelectItem value="RISCO">Risco</SelectItem>
-                                        <SelectItem value="DESENVOLVIMENTO">Desenvolvimento</SelectItem>
-                                        <SelectItem value="TRAFEGO">Tráfego</SelectItem>
-                                        <SelectItem value="FINANCEIRO">Financeiro</SelectItem>
-                                        <SelectItem value="GERENCIAL">Gerencial</SelectItem>
-                                        <SelectItem value="USER">Usuário</SelectItem>
-                                        <SelectItem value="AFILIADOS">Afiliados</SelectItem>
+                                        <SelectItem value="PROPRIETARIO">Proprietário</SelectItem>
+                                        <SelectItem value="ADMINISTRADOR">Administrador</SelectItem>
+                                        <SelectItem value="COLABORADOR">Colaborador</SelectItem>
                                     </SelectContent>
                                 </Select>
                             }

@@ -2,12 +2,12 @@ import { ChartNoAxesCombined, ChevronDown, Dices, LogOut, UserRoundPen, Users } 
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
-import { getProfileUser } from "@/api/get-profile-user";
+import { getProfileFuncionario } from "@/api/get-profile-funcionario";
 import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "./ui/skeleton";
 import { Dialog, DialogTrigger } from "./ui/dialog";
-import { UserProfileDialog } from "./user-profile-dialog";
+import { FuncionarioProfileDialog } from "./funcionario-profile-dialog";
 import { NavLink } from "./nav-link";
 
 const AccountMenu = () => {
@@ -18,9 +18,9 @@ const AccountMenu = () => {
         return null;
     }
 
-    const { data: profileUser, isLoading: isLoadingProfile } = useQuery({
-        queryKey: ['profileUser'],
-        queryFn: getProfileUser,
+    const { data: profileFuncionario, isLoading: isLoadingProfile } = useQuery({
+        queryKey: ['profileFuncionario'],
+        queryFn: getProfileFuncionario,
         staleTime: Infinity
     });
 
@@ -33,16 +33,16 @@ const AccountMenu = () => {
         <Dialog>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="flex select-none items-center gap-2 bg-[#18181B] rounded-xl">
+                    <Button variant="ghost" className="flex select-none items-center gap-2 rounded-xl">
                         
                         <ChevronDown className="h-4 w-4"/>
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-[#18181B] rounded-xl">
+                <DropdownMenuContent align="end" className="w-56 rounded-xl">
                     
                     <DropdownMenuLabel className="flex flex-col">
-                        <span>{isLoadingProfile ? <Skeleton className="h-4 w-40"/> : profileUser?.name }</span>
-                        <span className="text-xs font-normal text-muted-foreground">{profileUser?.email}</span>
+                        <span>{isLoadingProfile ? <Skeleton className="h-4 w-40"/> : profileFuncionario?.nome }</span>
+                        <span className="text-xs font-normal text-muted-foreground">{profileFuncionario?.email}</span>
                     </DropdownMenuLabel>
 
                     <DropdownMenuSeparator />
@@ -60,9 +60,9 @@ const AccountMenu = () => {
                         </NavLink>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer">
-                        <NavLink to="/users" className="flex items-center">
-                            <Users  className="mr-2 h-4 w-4"/>
-                            Usuários
+                        <NavLink to="/colaboradores" className="flex items-center">
+                            <Users className="mr-2 h-4 w-4"/>
+                            Colaboradores
                         </NavLink>
                     </DropdownMenuItem>
                     <DialogTrigger asChild>
@@ -79,7 +79,7 @@ const AccountMenu = () => {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <UserProfileDialog />
+            <FuncionarioProfileDialog />
         </Dialog>
      );
 }

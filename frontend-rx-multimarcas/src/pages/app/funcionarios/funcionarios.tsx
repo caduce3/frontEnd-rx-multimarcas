@@ -10,13 +10,13 @@ import { Pagination } from "@/components/pagination";
 import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { getUsers } from "@/api/get-users";
-import UsersTableFilters from "./users-table-filters";
-import UsersTableRow from "./users-table-row";
+import { getFuncionarios } from "@/api/get-funcionarios";
 import { PlayersTableSkeleton } from "../players/players-table-skeleton";
+import FuncionariosTableRow from "./funcionarios-table-row";
+import FuncionariosTableFilters from "./funcionarios-table-filters";
   
 
-export function Users() {
+export function Funcionarios() {
     const token = useAuthRedirect();
 
     if (!token) {
@@ -26,13 +26,13 @@ export function Users() {
     const [searchParams, setSearchParams] = useSearchParams();
     const page = searchParams.get('page') ?? 1;
 
-    const name = searchParams.get('name') ?? undefined;
+    const nome = searchParams.get('nome') ?? undefined;
     const email = searchParams.get('email') ?? undefined;
 
 
     const { data, isLoading } = useQuery({
-        queryKey: ['users', page, name, email],
-        queryFn: () => getUsers({page: Number(page), name, email})
+        queryKey: ['funcionarios', page, nome, email],
+        queryFn: () => getFuncionarios({page: Number(page), nome, email})
     });
 
     function handlePaginate(page: number) {
@@ -44,29 +44,29 @@ export function Users() {
     }
 
     return (
-        <>
-            <Helmet title="Users"/>
+        <div className="bg-[#F5F5F5]">
+            <Helmet title="Colaboradores"/>
             <div className="flex flex-row gap-4 items-center">
-                <h1 className="text-3xl font-bold tracking-tight">Usuários</h1>
-                <UsersTableFilters />
+                <h1 className="text-3xl font-bold tracking-tight">Colaboradores</h1>
+                <FuncionariosTableFilters />
             </div>
             {
                 isLoading ? <PlayersTableSkeleton /> 
                 :
                 <Table className=" bg-[#18181B] rounded-xl ">
-                    <TableCaption>Lista de Usuários.</TableCaption>
+                    <TableCaption>Lista de Colaboradores.</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Nome</TableHead>
                             <TableHead className="hidden lg:table-cell">E-mail</TableHead>
                             <TableHead className="hidden md:table-cell">Status</TableHead>
-                            <TableHead className="hidden sm:table-cell">Setor</TableHead>
+                            <TableHead className="hidden sm:table-cell">Cargo</TableHead>
                             <TableHead>Detalhes</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data && data.usersList.map(users => {
-                            return <UsersTableRow key={users.id} users={users}/>
+                        {data && data.funcionariosList.map(funcionarios => {
+                            return <FuncionariosTableRow key={funcionarios.id} funcionarios={funcionarios}/>
                         })}
                     </TableBody>
                 </Table>
@@ -76,6 +76,6 @@ export function Users() {
                 <Pagination currentPage={data.currentPage} totalPages={data.totalPages} totalItens={data.totalItens} onPageChange={handlePaginate}/>
             )}
 
-        </>
+        </div>
     )
 }

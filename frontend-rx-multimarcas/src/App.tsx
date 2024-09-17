@@ -12,7 +12,7 @@ export function App() {
   return (
     <HelmetProvider>
       <ThemeProvider storageKey='trofeubet-theme' defaultTheme='dark'>
-        <Helmet titleTemplate='%s | Trofeu.bet'/>
+        <Helmet titleTemplate='%s | RXmultimarcas'/>
         <Toaster richColors/>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />

@@ -3,21 +3,21 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { capitalizeName } from "@/services/formated-captalize-name";
 import { UserPen } from "lucide-react";
-import { UserDetailsDialog } from "@/components/user-details-dialog";
+import { FuncionarioDetailsDialog } from "@/components/funcionario-details-dialog";
 
-export interface UsersTableRowProps {
-    users: {
+export interface FuncionariosTableRowProps {
+    funcionarios: {
         id: string;
-        name: string;
-        gender: string;
+        nome: string;
         email: string;
-        status: "ACTIVE" | "INACTIVE";
-        date_created: Date;
-        sector: "RISCO" | "DESENVOLVIMENTO" | "TRAFEGO" | "FINANCEIRO" | "GERENCIAL" | "USER" | "AFILIADOS";
+        telefone: string;
+        cpf: string;
+        status: "ATIVO" | "INATIVO";
+        cargo: "PROPRIETARIO" | "ADMINISTRADOR" | "COLABORADOR";
     }
 }
 
-const UsersTableRow = ({ users }: UsersTableRowProps) => {
+const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleDetailsClick = () => {
@@ -31,10 +31,10 @@ const UsersTableRow = ({ users }: UsersTableRowProps) => {
     return (
         <>
             <TableRow>
-                <TableCell className="font-medium">{capitalizeName(users.name)}</TableCell>
-                <TableCell className="hidden lg:table-cell">{users.email}</TableCell>
-                <TableCell className="hidden md:table-cell">{capitalizeName(users.status)}</TableCell>
-                <TableCell className="hidden sm:table-cell">{capitalizeName(users.sector)}</TableCell>
+                <TableCell className="font-medium">{capitalizeName(funcionarios.nome)}</TableCell>
+                <TableCell className="hidden lg:table-cell">{funcionarios.email}</TableCell>
+                <TableCell className="hidden md:table-cell">{capitalizeName(funcionarios.status)}</TableCell>
+                <TableCell className="hidden sm:table-cell">{capitalizeName(funcionarios.cargo)}</TableCell>
                 <TableCell>
                     <Button variant="outline" size="sm" onClick={handleDetailsClick}>
                         <UserPen className="h-4 w-4" />
@@ -44,14 +44,14 @@ const UsersTableRow = ({ users }: UsersTableRowProps) => {
             </TableRow>
 
             {isModalOpen && (
-                <UserDetailsDialog
+                <FuncionarioDetailsDialog
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
-                    userId={users.id} 
+                    funcionarioId={funcionarios.id} 
                 />
             )}
         </>
     );
 };
 
-export default UsersTableRow;
+export default FuncionariosTableRow;

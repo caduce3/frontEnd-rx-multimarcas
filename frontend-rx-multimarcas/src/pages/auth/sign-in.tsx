@@ -95,7 +95,7 @@ export function SignIn() {
               <FormItem>
                 <FormLabel>Senha</FormLabel>
                 <FormControl>
-                  <Input type="senha" placeholder="********" {...field} />
+                  <Input type="password" placeholder="********" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

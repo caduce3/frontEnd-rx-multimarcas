@@ -3,58 +3,58 @@ import { DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } f
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { getProfileUser, GetProfileUserResponse } from "@/api/get-profile-user";
+import { getProfileFuncionario, GetProfileFuncionarioResponse } from "@/api/get-profile-funcionario";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  updateUserProfile } from "@/api/update-profile-user";
+import {  updateFuncionarioProfile } from "@/api/update-profile-funcionario";
 import { toast } from "sonner";
 
-const userProfileSchema = z.object({
-    name: z.string().min(4),
+const funcionarioProfileSchema = z.object({
+    nome: z.string().min(4),
     email: z.string().email()
 })
 
-type UserProfileSchema = z.infer<typeof userProfileSchema>
+type FuncionarioProfileSchema = z.infer<typeof funcionarioProfileSchema>
 
-export function UserProfileDialog() {
+export function FuncionarioProfileDialog() {
 
-    const { data: profileUser } = useQuery({
-        queryKey: ['profileUser'],
-        queryFn: getProfileUser
+    const { data: profileFuncionario } = useQuery({
+        queryKey: ['profileFuncionario'],
+        queryFn: getProfileFuncionario
     });
 
-    const { register, handleSubmit, formState: {isSubmitting} } = useForm<UserProfileSchema>({
-        resolver: zodResolver(userProfileSchema),
+    const { register, handleSubmit, formState: {isSubmitting} } = useForm<FuncionarioProfileSchema>({
+        resolver: zodResolver(funcionarioProfileSchema),
         values: {
-            name: profileUser?.name ?? '',
-            email: profileUser?.email ?? ''
+            nome: profileFuncionario?.nome ?? '',
+            email: profileFuncionario?.email ?? ''
         }
     })
 
     const queryClient = useQueryClient()
 
-    const { mutateAsync: updateUserProfileFn } = useMutation({
-        mutationFn: updateUserProfile,
-        onSuccess(_, {name, email}) {
-            const cached = queryClient.getQueryData<GetProfileUserResponse>(['profileUser'])
+    const { mutateAsync: updateFuncionarioProfileFn } = useMutation({
+        mutationFn: updateFuncionarioProfile,
+        onSuccess(_, {nome, email}) {
+            const cached = queryClient.getQueryData<GetProfileFuncionarioResponse>(['profileFuncionario'])
             if(cached){
                 queryClient.setQueryData(
-                    ['profileUser'], {
+                    ['profileFuncionario'], {
                     ...cached,
-                    name,
+                    nome,
                     email
                 })
             }
         }
     })
 
-    async function handleSubmitUserProfile(data: UserProfileSchema) {
+    async function handleSubmitFuncionarioProfile(data: FuncionarioProfileSchema) {
         try {
-            await updateUserProfileFn({ 
-                id: profileUser?.id ?? '',
-                name: data.name,
+            await updateFuncionarioProfileFn({ 
+                id: profileFuncionario?.id ?? '',
+                nome: data.nome,
                 email: data.email
             });
             toast.success("Perfil atualizado com sucesso!");
@@ -70,13 +70,13 @@ export function UserProfileDialog() {
                 <DialogDescription>Atualize as suas informações de usuário.</DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit(handleSubmitUserProfile)}>
+            <form onSubmit={handleSubmit(handleSubmitFuncionarioProfile)}>
                 <div className="space-y-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right" htmlFor="name-user">
                             Nome
                         </Label>
-                        <Input className="col-span-3" id="name-user" {...register('name')} />
+                        <Input className="col-span-3" id="name-user" {...register('nome')} />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right" htmlFor="email-user">

@@ -14,29 +14,29 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-const usersFilterSchema = z.object({
-    name: z.string().optional(),
+const funcionariosFilterSchema = z.object({
+    nome: z.string().optional(),
     email: z.string().optional()
 });
 
-type UsersFilterSchema = z.infer<typeof usersFilterSchema>;
+type FuncionariosFilterSchema = z.infer<typeof funcionariosFilterSchema>;
 
-const UsersTableFilters = () => {
+const FuncionariosTableFilters = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isOpen, setIsOpen] = useState(false);
 
-    const name = searchParams.get("name");
+    const nome = searchParams.get("nome");
     const email = searchParams.get("email");
 
-    const { register, handleSubmit, reset } = useForm<UsersFilterSchema>({
-        resolver: zodResolver(usersFilterSchema),
+    const { register, handleSubmit, reset } = useForm<FuncionariosFilterSchema>({
+        resolver: zodResolver(funcionariosFilterSchema),
         defaultValues: {
-            name: name ?? "",
+            nome: nome ?? "",
             email: email ?? ""
         }
     });
 
-    function handleFilter(data: UsersFilterSchema) {
+    function handleFilter(data:FuncionariosFilterSchema) {
         setSearchParams((state) => {
             Object.entries(data).forEach(([key, value]) => {
                 if (value) {
@@ -54,7 +54,7 @@ const UsersTableFilters = () => {
 
     function handleClearFilters() {
         reset({
-            name: "",
+            nome: "",
             email: ""
         });
         setSearchParams({});
@@ -82,7 +82,7 @@ const UsersTableFilters = () => {
                             <Input
                                 placeholder="Nome do jogador"
                                 className="h-9 w-full"
-                                {...register("name")}
+                                {...register("nome")}
                             />
                         </div>
 
@@ -117,4 +117,4 @@ const UsersTableFilters = () => {
     );
 };
 
-export default UsersTableFilters;
+export default FuncionariosTableFilters;

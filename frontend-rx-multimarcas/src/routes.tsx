@@ -7,7 +7,7 @@ import { SignUp } from './pages/auth/sign-up'
 import { Players } from './pages/app/players/players'
 import { NotFound } from './pages/404'
 import { PlayersDetails } from './pages/app/players/players-details/players-details'
-import { Users } from './pages/app/users/users'
+import { Funcionarios } from './pages/app/funcionarios/funcionarios'
 
 export const router = createBrowserRouter([
     {
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
             {path: '/', element: <Dashboard />},
             {path: '/players', element: <Players />},
             {path: 'players/:id', element: <PlayersDetails />},
-            {path: '/users', element: <Users />},
+            {path: '/colaboradores', element: <Funcionarios />},
         ]
     },
     {

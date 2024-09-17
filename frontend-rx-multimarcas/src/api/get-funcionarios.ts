@@ -1,33 +1,32 @@
 import { api } from "@/lib/axios";
 
-export interface GetUsersBody {
+export interface GetFuncionariosBody {
     page: number;
-    name?: string;
+    nome?: string;
     email?: string;
 }
 
-export interface GetUsersResponse {
+export interface GetFuncionariosResponse {
     totalItens: number;
     totalPages: number;
     currentPage: number;
-    usersList: {
+    funcionariosList: {
         id: string;
-        name: string;
-        gender: string;
+        nome: string;
         email: string;
-        password: string;
-        status: "ACTIVE" | "INACTIVE";
-        date_created: Date;
-        sector: "RISCO" | "DESENVOLVIMENTO" | "TRAFEGO" | "FINANCEIRO" | "GERENCIAL" | "USER" | "AFILIADOS";
+        telefone: string;
+        cpf: string;
+        status: "ATIVO" | "INATIVO";
+        cargo: "PROPRIETARIO" | "COLABORADOR" | "ADMINISTRADOR";
     }[]
 }
 
-export async function getUsers({ page, name, email }: GetUsersBody) {
+export async function getFuncionarios({ page, nome, email }: GetFuncionariosBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await api.post<GetUsersResponse>('/get_users', { page, name, email }, {
+        const response = await api.post<GetFuncionariosResponse>('/pegar_funcionarios', { page, nome, email }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

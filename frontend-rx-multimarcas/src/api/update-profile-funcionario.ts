@@ -1,19 +1,21 @@
 import { api } from "@/lib/axios";
 
-export interface UpdateUserProfileBody {
+export interface UpdateFuncionarioProfileBody {
     id: string;
-    name?: string;
+    nome?: string;
     email?: string;
-    status?: "ACTIVE" | "INACTIVE";
-    sector?: "RISCO" | "DESENVOLVIMENTO" | "TRAFEGO" | "FINANCEIRO" | "GERENCIAL" | "USER" | "AFILIADOS";
+    status?: "ATIVO" | "INATIVO";
+    cargo?: "PROPRIETARIO" | "ADMINISTRADOR" | "COLABORADOR";
+    cpf?: string;
+    telefone?: string;
 }
 
-export async function updateUserProfile({ id, name, email, status, sector }: UpdateUserProfileBody) {
+export async function updateFuncionarioProfile({ id, nome, email, telefone, cpf, status, cargo }: UpdateFuncionarioProfileBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await api.put(`/updateUser`, { id, name, email, status, sector }, {
+        const response = await api.put(`/atualizar_funcionario`, { id, nome, email, telefone, cpf, status, cargo }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

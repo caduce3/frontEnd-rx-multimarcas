@@ -1,27 +1,27 @@
 import { api } from "@/lib/axios";
 
-export interface GetUniqueUserBody {
+export interface GetUniqueFuncionarioBody {
     id: string;
 }
 
-export interface GetUniqueUserResponse {
-    user: {
+export interface GetUniqueFuncionarioResponse {
+    funcionario: {
         id: string;
-        name: string;
-        gender: string;
+        nome: string;
         email: string;
-        status: "ACTIVE" | "INACTIVE";
-        date_created: Date;
-        sector: "RISCO" | "DESENVOLVIMENTO" | "TRAFEGO" | "FINANCEIRO" | "GERENCIAL" | "USER" | "AFILIADOS";
+        telefone: string;
+        cpf: string;
+        status: "ATIVO" | "INATIVO";
+        cargo: "PROPRIETARIO" | "ADMINISTRADOR" | "COLABORADOR";
     }
 }
 
-export async function getDetailsUser({ id }: GetUniqueUserBody) {
+export async function getDetailsFuncionario({ id }: GetUniqueFuncionarioBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await api.get<GetUniqueUserResponse>(`/users/${id}`, {
+        const response = await api.get<GetUniqueFuncionarioResponse>(`/pegar_unico_funcionario/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
