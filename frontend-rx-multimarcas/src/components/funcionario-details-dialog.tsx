@@ -19,6 +19,8 @@ const funcionarioDetailsSchema = z.object({
     email: z.string().email(),
     status: z.enum(["ATIVO", "INATIVO"]),
     cargo: z.enum(["PROPRIETARIO", "ADMINISTRADOR", "COLABORADOR"]),
+    cpf: z.string(),
+    telefone: z.string()
 });
 
 type FuncionarioDetailsSchema = z.infer<typeof funcionarioDetailsSchema>;
@@ -57,13 +59,15 @@ export function FuncionarioDetailsDialog({ isOpen, onClose, funcionarioId }: Fun
                 email: detailsFuncionario.funcionario.email,
                 status: detailsFuncionario.funcionario.status,
                 cargo: detailsFuncionario.funcionario.cargo,
+                cpf: detailsFuncionario.funcionario.cpf,
+                telefone: detailsFuncionario.funcionario.telefone
             });
         }
     }, [detailsFuncionario, reset]);
 
     const { mutateAsync: updateFuncionarioDetailsFn } = useMutation({
         mutationFn: updateFuncionarioProfile,
-        onSuccess(_, { id, nome, email, status, cargo }) {
+        onSuccess(_, { id, nome, email, status, cargo, cpf, telefone }) {
             const cached = queryClient.getQueryData<GetUniqueFuncionarioResponse>(['detailsFuncionario']);
             if (cached) {
                 queryClient.setQueryData(['detailsFuncionario', id], {
@@ -72,6 +76,8 @@ export function FuncionarioDetailsDialog({ isOpen, onClose, funcionarioId }: Fun
                     email,
                     status,
                     cargo,
+                    cpf,
+                    telefone
                 });
             }
             queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("funcionarios") });
@@ -86,13 +92,24 @@ export function FuncionarioDetailsDialog({ isOpen, onClose, funcionarioId }: Fun
                 email: data.email,
                 status: data.status,
                 cargo: data.cargo,
+                cpf: data.cpf,
+                telefone: data.telefone
             });
             toast.success("Perfil atualizado com sucesso!");
             onClose();
-        } catch {
-            toast.error("Erro ao atualizar este usuário!");
+        } catch (error: any) {
+            // Verifique se a estrutura do erro é a esperada
+            let errorMessage = 'Erro desconhecido ao atualizar perfil.';
+            if (error?.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+            toast.error(errorMessage);
         }
     }
+    
+    
 
     if (!isOpen) return null;
 
@@ -161,6 +178,26 @@ export function FuncionarioDetailsDialog({ isOpen, onClose, funcionarioId }: Fun
                                         <SelectItem value="COLABORADOR">Colaborador</SelectItem>
                                     </SelectContent>
                                 </Select>
+                            }
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right" htmlFor="cpf-user">
+                                CPF
+                            </Label>
+                            {isLoading ? 
+                                <Skeleton className="h-[30px] w-[300px]"/> 
+                            : 
+                            <Input className="col-span-3" id="cpf-user" {...register('cpf')} />
+                            }
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right" htmlFor="telefone-user">
+                                Telefone
+                            </Label>
+                            {isLoading ? 
+                                <Skeleton className="h-[30px] w-[300px]"/> 
+                            : 
+                            <Input className="col-span-3" id="telefone-user" {...register('telefone')} />
                             }
                         </div>
                     </div>

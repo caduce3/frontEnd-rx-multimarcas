@@ -44,16 +44,15 @@ export function Funcionarios() {
     }
 
     return (
-        <div className="bg-[#F5F5F5]">
+        <div className="shadow-lg rounded-lg p-4">
             <Helmet title="Colaboradores"/>
             <div className="flex flex-row gap-4 items-center">
-                <h1 className="text-3xl font-bold tracking-tight">Colaboradores</h1>
                 <FuncionariosTableFilters />
             </div>
             {
                 isLoading ? <PlayersTableSkeleton /> 
                 :
-                <Table className=" bg-[#18181B] rounded-xl ">
+                <Table className=" rounded-md border mt-5 ">
                     <TableCaption>Lista de Colaboradores.</TableCaption>
                     <TableHeader>
                         <TableRow>

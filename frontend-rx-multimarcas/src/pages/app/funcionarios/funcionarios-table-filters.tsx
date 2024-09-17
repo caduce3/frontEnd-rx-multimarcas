@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Filter, Search, X } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -64,9 +64,9 @@ const FuncionariosTableFilters = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="flex items-center bg-[#18181B] rounded-lg" onClick={() => setIsOpen(true)}>
-                    <span className="text-sm font-semibold mr-2">Filtros</span>
-                    <Filter className="h-4 w-4" />
+                <Button variant="outline" size="sm" className="flex items-center justify-between bg-[#F5F5F5] border-none w-48" onClick={() => setIsOpen(true)}>
+                    <span className="text-sm font-semibold">Filtros</span>
+                    <ChevronDown className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent>
@@ -80,7 +80,7 @@ const FuncionariosTableFilters = () => {
                     <div className="flex flex-wrap gap-4">
                         <div className="flex gap-4 w-full">
                             <Input
-                                placeholder="Nome do jogador"
+                                placeholder="Nome do funcionário"
                                 className="h-9 w-full"
                                 {...register("nome")}
                             />
@@ -88,7 +88,7 @@ const FuncionariosTableFilters = () => {
 
                         <div className="flex gap-4 w-full">
                             <Input
-                                placeholder="E-mail do jogador"
+                                placeholder="E-mail do funcionário"
                                 className="h-9 w-full"
                                 {...register("email")}
                             />
