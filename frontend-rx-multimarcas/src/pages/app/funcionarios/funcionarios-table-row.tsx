@@ -7,6 +7,8 @@ import { FuncionarioDetailsDialog } from "@/components/funcionario-details-dialo
 import { deletarFuncionario } from "@/api/delete-unique-funcionario";
 import { DeleteConfirmationModal } from "@/components/card-confirmar-cancelar";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge"
+
 
 export interface FuncionariosTableRowProps {
     funcionarios: {
@@ -57,7 +59,11 @@ const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
             <TableRow>
                 <TableCell className="font-medium">{capitalizeName(funcionarios.nome)}</TableCell>
                 <TableCell className="hidden lg:table-cell">{funcionarios.email}</TableCell>
-                <TableCell className="hidden md:table-cell">{capitalizeName(funcionarios.status)}</TableCell>
+                <TableCell className="hidden md:table-cell">
+                    <Badge variant={funcionarios.status === "ATIVO" ? "default" : "destructive"}>
+                        {capitalizeName(funcionarios.status)}
+                    </Badge>
+                </TableCell>
                 <TableCell className="hidden sm:table-cell">{capitalizeName(funcionarios.cargo)}</TableCell>
                 <TableCell>
                     <Button variant="outline" size="sm" onClick={handleDetailsClick}>

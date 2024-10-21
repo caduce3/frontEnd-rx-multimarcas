@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import {
     Table,
     TableBody,
-    TableCaption, TableHead,
+    TableHead,
     TableHeader,
     TableRow
 } from "@/components/ui/table";
