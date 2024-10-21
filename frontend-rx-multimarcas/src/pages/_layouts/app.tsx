@@ -6,9 +6,9 @@ export function AppLayout() {
     return (
         <SidebarProvider>
             <div className="flex min-h-screen flex-col antialiased">
-                <div className="flex h-screen">
+                <div className="flex h-screen w-screen">
                     <AppSidebar />
-                    <div className="flex-1 p-8 pt-6 bg-white">
+                    <div className="p-8 pt-6 flex-1">
                         <SidebarTrigger />
                         <Outlet />
                     </div>

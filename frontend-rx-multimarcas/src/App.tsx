@@ -11,7 +11,7 @@ export function App() {
 
   return (
     <HelmetProvider>
-      <ThemeProvider storageKey='trofeubet-theme' defaultTheme='dark'>
+      <ThemeProvider storageKey='rxmultimarcas-theme' defaultTheme='light'>
         <Helmet titleTemplate='%s | RXmultimarcas'/>
         <Toaster richColors/>
         <QueryClientProvider client={queryClient}>
