@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { capitalizeName } from "@/services/formated-captalize-name";
-import { UserPen } from "lucide-react";
+import { Trash2, UserPen } from "lucide-react";
 import { FuncionarioDetailsDialog } from "@/components/funcionario-details-dialog";
+import { deletarFuncionario } from "@/api/delete-unique-funcionario";
+import { DeleteConfirmationModal } from "@/components/card-confirmar-cancelar";
+import { toast } from "sonner";
 
 export interface FuncionariosTableRowProps {
     funcionarios: {
@@ -19,6 +22,7 @@ export interface FuncionariosTableRowProps {
 
 const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleDetailsClick = () => {
         setIsModalOpen(true);
@@ -26,6 +30,26 @@ const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    };
+
+    const handleDeleteClick = () => {
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleCancelDelete = () => {
+        setIsDeleteModalOpen(false);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await deletarFuncionario({ id: funcionarios.id });
+            setIsDeleteModalOpen(false);
+            toast.success("Colaborador deletado com sucesso!");
+            window.location.reload();
+        } catch (error) {
+            toast.error("Erro ao deletar colaborador");
+            console.error('Erro ao deletar funcionário:', error);
+        }
     };
 
     return (
@@ -40,6 +64,10 @@ const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
                         <UserPen className="h-4 w-4" />
                         <span className="sr-only">Detalhes do usuário</span>
                     </Button>
+                    <Button variant="secondary" size="sm" className="ml-1" onClick={handleDeleteClick}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Deletar usuário</span>
+                    </Button>
                 </TableCell>
             </TableRow>
 
@@ -50,6 +78,12 @@ const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
                     funcionarioId={funcionarios.id} 
                 />
             )}
+
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen} 
+                onConfirm={handleConfirmDelete} 
+                onCancel={handleCancelDelete} 
+            />
         </>
     );
 };

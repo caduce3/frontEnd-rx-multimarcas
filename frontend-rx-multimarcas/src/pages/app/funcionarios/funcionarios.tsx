@@ -53,7 +53,6 @@ export function Funcionarios() {
                 isLoading ? <PlayersTableSkeleton /> 
                 :
                 <Table className=" rounded-md border mt-5">
-                    <TableCaption>Lista de Colaboradores.</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Nome</TableHead>
