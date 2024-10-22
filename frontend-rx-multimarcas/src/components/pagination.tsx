@@ -31,11 +31,11 @@ export function Pagination({ currentPage, totalPages, totalItens, onPageChange }
                         <ChevronLeft className="h-4 w-4"/>
                         <span className="sr-only">Página anterior</span>
                     </Button>
-                    <Button variant="outline" className="h-8 w-8 p-0" onClick={() => onPageChange(currentPage + 1)} disabled={totalPages <= currentPage + 1}>
+                    <Button variant="outline" className="h-8 w-8 p-0" onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
                         <ChevronRight className="h-4 w-4"/>
                         <span className="sr-only">Próxima página</span>
                     </Button>
-                    <Button variant="outline" className="h-8 w-8 p-0" onClick={() => onPageChange(totalPages)} disabled={totalPages <= currentPage + 1}>
+                    <Button variant="outline" className="h-8 w-8 p-0" onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages}>
                         <ChevronsRight className="h-4 w-4"/>
                         <span className="sr-only">Última página</span>
                     </Button>
