@@ -1,5 +1,5 @@
 import { Boxes, ChartNoAxesCombined, ChevronUp, LogOut, ShoppingCart, User2, Users } from "lucide-react"
-import logo from "../assets/logoRXmulti.png"
+import logo from "../assets/logoRXbranca.png"
 import {
   Sidebar,
   SidebarContent,
@@ -64,68 +64,55 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="bg-black">
         <SidebarGroup>
-          <SidebarGroupLabel className="mt-9 mb-9">
+          <SidebarGroupLabel className="m-auto mt-9 mb-9">
             <div>
-                <img src={logo} alt="RX Multimarcas" className="w-48 mb-4" />   
+                <img src={logo} alt="RX Multimarcas" className="w-40 mb-4" />   
             </div>
           </SidebarGroupLabel>
             <SidebarGroupContent>
                 <SidebarMenu className="">
                     {items.map((item) => {
-                    const location = useLocation();
-                    const isActive = location.pathname === item.url;
-
-                    return (
+                      const location = useLocation();
+                      const isActive = location.pathname === item.url;
+                  
+                      return (
                         <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
+                          <SidebarMenuButton asChild>
                             <a 
-                            href={item.url}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-md mb-2 transition-colors duration-200 ${
-                                isActive
-                                ? "bg-[#EAF5FB] text-[#2D9CDB]"  // Estilo aplicado quando ativo
-                                : "text-[#000] hover:bg-[#EAF5FB] hover:text-[#2D9CDB]"  // Estilo hover
-                            }`}
+                              href={item.url}
+                              className={`flex items-center gap-2 px-4 py-2 rounded-md mb-2 transition-colors duration-200 ${
+                                isActive 
+                                  ? "bg-[#FFFFFF] text-[#000000]"  // Estilo quando o item está ativo
+                                  : "text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#000000]"  // Estilo padrão com hover (texto cinza)
+                              }`}
                             >
-                            <item.icon />
-                            <span>{item.title}</span>
+                              <item.icon />
+                              <span>{item.title}</span>
                             </a>
-                        </SidebarMenuButton>
+                          </SidebarMenuButton>
                         </SidebarMenuItem>
-                    );
+                      );
                     })}
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-      <SidebarMenu>
+      <SidebarFooter className="bg-black">
+          <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
-                    <User2 /> 
-                    <div className="flex flex-col mr-">
-                        <span>{isLoadingProfile ? <Skeleton className="h-4 w-40"/> : profileFuncionario?.nome }</span>
-                        <span className="text-xs font-normal text-muted-foreground">{profileFuncionario?.email}</span>
-                    </div>
-                    <ChevronUp className="ml-auto" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  className="w-[--radix-popper-anchor-width]"
-                >
-                  <DropdownMenuItem className="text-rose-500 dark:text-rose-400 cursor-pointer" onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4"/>
-                    <span>Sair</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                <SidebarMenuButton className="hover:bg-black">
+                  <User2 className="text-[#FFFFFF]"/> 
+                  <div className="flex flex-col text-[#FFFFFF]">
+                      <span className="">{isLoadingProfile ? <Skeleton className="h-4 w-40"/> : profileFuncionario?.nome }</span>
+                      <span className="text-xs font-normal">{profileFuncionario?.email}</span>
+                  </div>
+                  <LogOut className="ml-12 h-6 w-6 text-rose-500 dark:text-rose-400 cursor-pointer" onClick={handleLogout}/>
+                </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-      </SidebarFooter>
+        </SidebarFooter>
     </Sidebar>
   )
 }
