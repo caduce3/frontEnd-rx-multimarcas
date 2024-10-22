@@ -64,7 +64,7 @@ const FuncionariosTableFilters = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="flex items-center justify-between bg-[#F5F5F5]  w-48" onClick={() => setIsOpen(true)}>
+                <Button variant="outline" size="sm" className="flex items-center justify-between w-48" onClick={() => setIsOpen(true)}>
                     <span className="text-sm font-semibold">Filtros</span>
                     <ChevronDown className="h-4 w-4" />
                 </Button>

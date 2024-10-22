@@ -44,7 +44,7 @@ export function Funcionarios() {
     }
 
     return (
-        <div className="shadow-lg bg-[#F5F5F7] rounded-lg p-4 w-full">
+        <div className="shadow-lg rounded-lg p-4 w-full">
             <Helmet title="Colaboradores"/>
             <div className="flex flex-row gap-4 items-center">
                 <FuncionariosTableFilters />

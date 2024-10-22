@@ -1,4 +1,4 @@
-import { Boxes, ChartNoAxesCombined, ChevronUp, LogOut, ShoppingCart, User2, Users } from "lucide-react"
+import { Boxes, ChartNoAxesCombined, LogOut, ShoppingCart, User2, UserRoundCog, Users } from "lucide-react"
 import logo from "../assets/logoRXbranca.png"
 import {
   Sidebar,
@@ -15,7 +15,6 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { useAuthRedirect } from "@/middlewares/authRedirect"
 import { getProfileFuncionario } from "@/api/get-profile-funcionario"
 import { useQuery } from "@tanstack/react-query";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { Skeleton } from "./ui/skeleton"
 
 // Menu items.
@@ -31,6 +30,11 @@ const items = [
     icon: ShoppingCart,
   },
   {
+    title: "Clientes",
+    url: "#",
+    icon: Users,
+  },
+  {
     title: "Produtos",
     url: "#",
     icon: Boxes,
@@ -38,7 +42,7 @@ const items = [
   {
     title: "Colaboradores",
     url: "/colaboradores",
-    icon: Users,
+    icon: UserRoundCog,
   }
 ]
 
