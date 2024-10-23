@@ -13,6 +13,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { mascaraCPF } from "@/services/onChangeCpf";
+import { mascaraTelefone } from "@/services/onChangeTelefone";
 
 const clientesFilterSchema = z.object({
     nome: z.string().optional(),
@@ -106,7 +108,12 @@ const ClientesTableFilters = () => {
                             <Input
                                 placeholder="Telefone do cliente"
                                 className="h-9 w-full"
-                                {...register("telefone")}
+                                {...register("telefone", {
+                                    onChange: (e) => {
+                                        const valorTelefoneFormatado = mascaraTelefone(e.target.value);
+                                        e.target.value = valorTelefoneFormatado;
+                                    },
+                                })}
                             />
                         </div>
 
@@ -114,7 +121,12 @@ const ClientesTableFilters = () => {
                             <Input
                                 placeholder="CPF do cliente"
                                 className="h-9 w-full"
-                                {...register("cpf")}
+                                {...register("cpf", {
+                                    onChange: (e) => {
+                                        const valorFormatado = mascaraCPF(e.target.value);
+                                        e.target.value = valorFormatado;
+                                    },
+                                })}
                             />
                         </div>
 
