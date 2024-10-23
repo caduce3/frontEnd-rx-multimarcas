@@ -8,6 +8,7 @@ import { deletarFuncionario } from "@/api/delete-unique-funcionario";
 import { DeleteConfirmationModal } from "@/components/card-confirmar-cancelar";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge"
+import { queryClient } from "@/lib/react-query";
 
 
 export interface FuncionariosTableRowProps {
@@ -35,6 +36,7 @@ const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
     };
 
     const handleDeleteClick = () => {
+        queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("funcionarios") });
         setIsDeleteModalOpen(true);
     };
 
@@ -47,7 +49,6 @@ const FuncionariosTableRow = ({ funcionarios }: FuncionariosTableRowProps) => {
             await deletarFuncionario({ id: funcionarios.id });
             setIsDeleteModalOpen(false);
             toast.success("Colaborador deletado com sucesso!");
-            window.location.reload();
         } catch (error) {
             toast.error("Erro ao deletar colaborador");
             console.error('Erro ao deletar funcionário:', error);

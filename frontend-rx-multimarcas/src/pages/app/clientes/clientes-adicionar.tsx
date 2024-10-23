@@ -1,9 +1,11 @@
 import { adicionarCliente } from "@/api/clientes/adicionar-cliente";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { queryClient } from "@/lib/react-query";
+import { mascaraCEP } from "@/services/onChangeCEP";
 import { mascaraCPF } from "@/services/onChangeCpf";
 import { mascaraTelefone } from "@/services/onChangeTelefone";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -64,7 +66,20 @@ const AdicionarClientes = () => {
             await adicionarClienteFn(values);
             toast.success("Cliente criado com sucesso!");
             queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("clientes") });
-            form.reset();
+            form.reset({
+                nome: "",
+                email: "",
+                telefone: "",
+                cpf: "",
+                endereco: {
+                    rua: "",
+                    numero: "",
+                    bairro: "",
+                    cidade: "",
+                    estado: "",
+                    cep: ""
+                }
+            });
         } catch (error: any) {
             const errorMessage = error instanceof Error ? error.message : "Erro inesperado ao cadastrar cliente.";
             toast.error(errorMessage);
@@ -80,7 +95,15 @@ const AdicionarClientes = () => {
             nome: "",
             email: "",
             telefone: "",
-            cpf: ""
+            cpf: "",
+            endereco: {
+                rua: "",
+                numero: "",
+                bairro: "",
+                cidade: "",
+                estado: "",
+                cep: ""
+            }
         });
         setIsOpen(false);
     }
@@ -172,6 +195,108 @@ const AdicionarClientes = () => {
                                     </FormItem>
                                 )}
                             />
+
+                            <Accordion type="single" collapsible>
+                                <AccordionItem value="item-1">
+                                    <AccordionTrigger>Adicionar endereço</AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="flex flex-wrap gap-4">
+                                            <div className="flex w-full">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="endereco.rua"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col gap-1 w-full mr-2">
+                                                            <FormLabel>Rua</FormLabel>
+                                                            <FormControl>
+                                                                <Input className="h-9 w-full" placeholder="Rua" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="endereco.bairro"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col gap-1 w-full">
+                                                            <FormLabel>Bairro</FormLabel>
+                                                            <FormControl>
+                                                                <Input className="h-9 w-full" placeholder="Bairro" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex w-full">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="endereco.cidade"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col gap-1 w-full mr-2">
+                                                            <FormLabel>Cidade</FormLabel>
+                                                            <FormControl>
+                                                                <Input className="h-9 w-full" placeholder="Cidade" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="endereco.estado"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col gap-1 w-full">
+                                                            <FormLabel>Estado</FormLabel>
+                                                            <FormControl>
+                                                                <Input className="h-9 w-full" placeholder="Estado" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex w-full">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="endereco.cep"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col gap-1 w-full mr-2">
+                                                            <FormLabel>CEP</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    className="h-9 w-full"
+                                                                    placeholder="CEP"
+                                                                    {...field}
+                                                                    onChange={(e) => {
+                                                                        const valorFormatado = mascaraCEP(e.target.value);
+                                                                        field.onChange(valorFormatado);
+                                                                    }}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="endereco.numero"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col gap-1 w-full">
+                                                            <FormLabel>Número</FormLabel>
+                                                            <FormControl>
+                                                                <Input className="h-9 w-full" placeholder="Número" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
 
                         </div>
 
