@@ -8,6 +8,7 @@ import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import ClientesTableFilters from "./clientes-table-filters";
 import ClientesTableRow from "./clientes-table-row";
+import AdicionarClientes from "./clientes-adicionar";
 
 const Clientes = () => {
 
@@ -43,6 +44,7 @@ const Clientes = () => {
             <Helmet title="Clientes"/>
             <div className="flex flex-row gap-4 items-center">
                 <ClientesTableFilters />
+                <AdicionarClientes />
             </div>
             {
                 isLoading ? <PlayersTableSkeleton /> 
