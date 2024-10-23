@@ -8,6 +8,7 @@ import { Players } from './pages/app/players/players'
 import { NotFound } from './pages/404'
 import { PlayersDetails } from './pages/app/players/players-details/players-details'
 import { Funcionarios } from './pages/app/funcionarios/funcionarios'
+import Clientes from './pages/app/clientes/clientes'
 
 export const router = createBrowserRouter([
     {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
             {path: '/players', element: <Players />},
             {path: 'players/:id', element: <PlayersDetails />},
             {path: '/colaboradores', element: <Funcionarios />},
+            {path: '/clientes', element: <Clientes />},
         ]
     },
     {
