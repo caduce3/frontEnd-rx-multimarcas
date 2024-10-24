@@ -1,12 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClienteInformacoesEnderecoDialog } from "./cliente-dialog-info-endereco";
 import { useState } from "react";
-import { Trash2, UserPen } from "lucide-react";
+import { Plus, Trash2, UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmationModal } from "@/components/card-confirmar-cancelar";
 import { queryClient } from "@/lib/react-query";
 import { deletarEnderecoCliente } from "@/api/enderecos/deletar-unico-endereco";
 import { toast } from "sonner";
+import AdicionarEnderecoClientes from "./client-dialog-adicionar-endereco";
 
 interface Endereco {
     id: string;
@@ -63,9 +64,16 @@ const ClienteEnderecosCard: React.FC<ClienteEnderecosCardProps> = ({ enderecos }
     return (
         <>
             <Card className="w-[40vw]">
-                <CardHeader>
-                    <CardTitle>Endereço(s)</CardTitle>
-                    <CardDescription>Lista de endereços do cliente</CardDescription>
+                <CardHeader >
+                    <div className="flex justify-between">
+                        <div>
+                            <CardTitle>Endereço(s)</CardTitle>
+                            <CardDescription>Lista de endereços do cliente</CardDescription>
+                        </div>
+                        <div>
+                            <AdicionarEnderecoClientes />
+                        </div>
+                    </div>
                 </CardHeader>
                 <CardContent className="mt-1 rounded-lg">
                     {enderecos && enderecos.length > 0 ? (

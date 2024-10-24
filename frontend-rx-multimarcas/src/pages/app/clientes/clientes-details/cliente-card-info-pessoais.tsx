@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserPen } from "lucide-react";
 import { useState } from "react";
 import { ClienteInformacoesPessoaisDialog } from "./cliente-dialog-info-pessoais";
+import AdicionarEnderecoClientes from "./endereco/client-dialog-adicionar-endereco";
 
 interface ClienteDetalhesPessoaisProps {
     nome?: string;
