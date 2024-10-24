@@ -108,8 +108,6 @@ export function FuncionarioDetailsDialog({ isOpen, onClose, funcionarioId }: Fun
             toast.error(errorMessage);
         }
     }
-    
-    
 
     if (!isOpen) return null;
 

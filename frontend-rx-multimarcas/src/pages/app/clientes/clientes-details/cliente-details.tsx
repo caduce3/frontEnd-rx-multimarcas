@@ -8,6 +8,7 @@ import { ChevronLeft } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import ClienteDetalhesPessoaisCard from "./cliente-card-info-pessoais";
 
 const DetalhesCliente = () => {
     const token = useAuthRedirect();
@@ -20,7 +21,7 @@ const DetalhesCliente = () => {
     const { id } = useParams<{ id: string }>();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['cliente', id],
+        queryKey: ['cliente_info_pessoais', id],
         queryFn: async () => {
             if (!id) {
                 navigate(`/clientes`);
@@ -29,7 +30,7 @@ const DetalhesCliente = () => {
             }
             return pegarUnicoCliente({ id });
         },
-        enabled: !!id // Executa a consulta somente se id estiver definido
+        enabled: !! id 
     });
 
     const cliente = data?.cliente;
@@ -43,18 +44,13 @@ const DetalhesCliente = () => {
             </Button>
             <div className="flex">
                 <div className="mr-3">
-                    <Card className="w-[40vw] mb-3">
-                        <CardHeader>
-                            <CardTitle>Detalhes do cliente</CardTitle>
-                            <CardDescription>Informações pessoais</CardDescription>
-                        </CardHeader>
-                        <CardContent className="rounded-lg">
-                            <p className="font-bold text-lg">{cliente?.nome}</p>
-                            <p className="text-sm font-normal mt-1"><span className="font-medium">E-mail: </span>{cliente?.email}</p>
-                            <p className="text-sm"><span className="font-medium">Telefone:</span> {cliente?.telefone}</p>
-                            <p className="text-sm"><span className="font-medium">CPF:</span> {cliente?.cpf}</p>
-                        </CardContent>
-                    </Card>
+                    <ClienteDetalhesPessoaisCard 
+                        nome={cliente?.nome}
+                        email={cliente?.email}
+                        telefone={cliente?.telefone}
+                        cpf={cliente?.cpf}
+                        clienteId={cliente?.id ?? ""}
+                    />
                     <Card className="w-[40vw]">
                         <CardHeader>
                             <CardTitle>Endereço(s)</CardTitle>
@@ -101,7 +97,6 @@ const DetalhesCliente = () => {
                     </Card>
                 </div>
             </div>
-
         </>
     );
 }
