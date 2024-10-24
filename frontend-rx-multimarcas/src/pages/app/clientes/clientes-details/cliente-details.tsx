@@ -51,6 +51,7 @@ const DetalhesCliente = () => {
                         telefone={cliente?.telefone}
                         cpf={cliente?.cpf}
                         clienteId={cliente?.id ?? ""}
+                        isLoading={isLoading}
                     />
                     <ClienteEnderecosCard 
                         enderecos={cliente?.Enderecos ?? []}

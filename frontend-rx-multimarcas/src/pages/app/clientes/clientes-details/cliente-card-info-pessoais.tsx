@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserPen } from "lucide-react";
 import { useState } from "react";
 import { ClienteInformacoesPessoaisDialog } from "./cliente-dialog-info-pessoais";
-import AdicionarEnderecoClientes from "./endereco/client-dialog-adicionar-endereco";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ClienteDetalhesPessoaisProps {
     nome?: string;
@@ -11,9 +11,10 @@ interface ClienteDetalhesPessoaisProps {
     telefone?: string;
     cpf?: string;
     clienteId: string;
+    isLoading: boolean;
 }
 
-const ClienteDetalhesPessoaisCard: React.FC<ClienteDetalhesPessoaisProps> = ({ nome, email, telefone, cpf, clienteId }) => {
+const ClienteDetalhesPessoaisCard: React.FC<ClienteDetalhesPessoaisProps> = ({ nome, email, telefone, cpf, clienteId, isLoading }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -42,10 +43,10 @@ const ClienteDetalhesPessoaisCard: React.FC<ClienteDetalhesPessoaisProps> = ({ n
                     </div>
                 </CardHeader>
                 <CardContent className="rounded-lg">
-                    <p className="font-bold text-lg">{nome}</p>
-                    <p className="text-sm font-normal mt-1"><span className="font-medium">E-mail: </span>{email}</p>
-                    <p className="text-sm"><span className="font-medium">Telefone:</span> {telefone}</p>
-                    <p className="text-sm"><span className="font-medium">CPF:</span> {cpf}</p>
+                    {isLoading ? <Skeleton className="h-3 w-40 mb-1" /> : <p className="text-sm"><span className="font-medium">Nome:</span> {nome}</p>}
+                    {isLoading ? <Skeleton className="h-3 w-40 mb-1" /> : <p className="text-sm"><span className="font-medium">Email:</span> {email}</p>}
+                    { isLoading ? <Skeleton className="h-3 w-40 mb-1" /> : <p className="text-sm"><span className="font-medium">Telefone:</span> {telefone}</p> }
+                    {isLoading  ? <Skeleton className="h-3 w-40 mb-1" /> : <p className="text-sm"><span className="font-medium">CPF:</span> : {cpf}</p>}
                 </CardContent>
             </Card>
 

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClienteInformacoesEnderecoDialog } from "./cliente-dialog-info-endereco";
 import { useState } from "react";
-import { Plus, Trash2, UserPen } from "lucide-react";
+import { Trash2, UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmationModal } from "@/components/card-confirmar-cancelar";
 import { queryClient } from "@/lib/react-query";
