@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ClienteDetalhesPessoaisCard from "./cliente-card-info-pessoais";
+import ClienteEnderecosCard from "./endereco/cliente-card-info-endereco";
 
 const DetalhesCliente = () => {
     const token = useAuthRedirect();
@@ -51,27 +52,9 @@ const DetalhesCliente = () => {
                         cpf={cliente?.cpf}
                         clienteId={cliente?.id ?? ""}
                     />
-                    <Card className="w-[40vw]">
-                        <CardHeader>
-                            <CardTitle>Endereço(s)</CardTitle>
-                            <CardDescription>Lista de endereços do cliente</CardDescription>
-                        </CardHeader>
-                        <CardContent className="mt-2 mb-1 rounded-lg">
-                            {cliente?.Enderecos && cliente.Enderecos.length > 0 ? (
-                                cliente.Enderecos.map((endereco: any, index: number) => (
-                                    <div key={index} className="mb-3">
-                                        <div className="mb-3">
-                                            <p className="font-bold">{endereco.rua},{endereco.numero}</p>
-                                            <p className="text-sm">Bairro {endereco.bairro}, {endereco.cidade} {endereco.estado} / {endereco.cep}</p>
-                                        </div>
-                                        <Separator />
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-gray-700">Nenhum endereço informado</p>
-                            )}
-                        </CardContent>
-                    </Card>
+                    <ClienteEnderecosCard 
+                        enderecos={cliente?.Enderecos ?? []}
+                    />
                 </div>
                 <div>
                     <Card className="w-[40vw]">

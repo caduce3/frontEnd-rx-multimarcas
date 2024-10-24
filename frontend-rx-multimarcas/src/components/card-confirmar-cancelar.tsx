@@ -13,7 +13,7 @@ export const DeleteConfirmationModal = ({ isOpen, onConfirm, onCancel }: DeleteC
             <DialogContent>
                 <DialogHeader>
                     <h3 className="text-lg font-bold">Confirmar Exclusão</h3>
-                    <p>Tem certeza de que deseja deletar este usuário? Esta ação não pode ser desfeita.</p>
+                    <p>Tem certeza de que deseja deletar? Esta ação não pode ser desfeita.</p>
                 </DialogHeader>
                 <DialogFooter>
                     <Button variant="destructive" onClick={onConfirm}>
