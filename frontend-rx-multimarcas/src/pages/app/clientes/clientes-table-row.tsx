@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { capitalizeName } from "@/services/formated-captalize-name";
-import { UserPen } from "lucide-react";
+import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -32,7 +32,7 @@ const ClientesTableRow = ({ clientes }: ClientesTableRowProps) => {
                 <TableCell className="hidden sm:table-cell">{clientes.cpf}</TableCell>
                 <TableCell>
                     <Button variant="outline" size="sm" onClick={handleDetailsClick}>
-                        <UserPen className="h-4 w-4" />
+                        <Search className="h-4 w-4" />
                         <span className="sr-only">Detalhes do cliente</span>
                     </Button>
                 </TableCell>
