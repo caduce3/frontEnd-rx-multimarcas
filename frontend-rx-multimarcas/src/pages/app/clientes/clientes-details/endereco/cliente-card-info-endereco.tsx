@@ -8,6 +8,7 @@ import { queryClient } from "@/lib/react-query";
 import { deletarEnderecoCliente } from "@/api/enderecos/deletar-unico-endereco";
 import { toast } from "sonner";
 import AdicionarEnderecoClientes from "./client-dialog-adicionar-endereco";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Endereco {
     id: string;
@@ -21,9 +22,10 @@ interface Endereco {
 
 interface ClienteEnderecosCardProps {
     enderecos: Endereco[];
+    isLoading: boolean;
 }
 
-const ClienteEnderecosCard: React.FC<ClienteEnderecosCardProps> = ({ enderecos }) => {
+const ClienteEnderecosCard: React.FC<ClienteEnderecosCardProps> = ({ enderecos, isLoading }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedEnderecoId, setSelectedEnderecoId] = useState<string | null>(null); // Estado para guardar o ID do endereço selecionado
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -75,30 +77,34 @@ const ClienteEnderecosCard: React.FC<ClienteEnderecosCardProps> = ({ enderecos }
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="mt-1 rounded-lg">
-                    {enderecos && enderecos.length > 0 ? (
-                        enderecos.map((endereco) => (
-                            <div key={endereco.id} className="mb-3">
-                                <div className="mb-3 border p-2 rounded-md flex justify-between">
-                                    <div>
-                                        <p className="font-bold">{endereco.rua}, {endereco.numero}</p>
-                                        <p className="text-sm">Bairro {endereco.bairro}, {endereco.cidade} {endereco.estado} / {endereco.cep}</p>
+                {
+                    isLoading ? <Skeleton className="h-16 w-80  m-5" /> : (
+                        <CardContent className="mt-1 rounded-lg">
+                            {enderecos && enderecos.length > 0 ? (
+                                enderecos.map((endereco) => (
+                                    <div key={endereco.id} className="mb-3">
+                                        <div className="mb-3 border p-2 rounded-md flex justify-between">
+                                            <div>
+                                                <p className="font-bold">{endereco.rua}, {endereco.numero}</p>
+                                                <p className="text-sm">Bairro {endereco.bairro}, {endereco.cidade} {endereco.estado} / {endereco.cep}</p>
+                                            </div>
+                                            <div>
+                                                <Button variant="outline" size="sm" onClick={() => handleDetailsClick(endereco.id)}>
+                                                    <UserPen className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="secondary" size="sm" className="ml-1" onClick={() => handleDeleteClick(endereco.id)}>
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <Button variant="outline" size="sm" onClick={() => handleDetailsClick(endereco.id)}>
-                                            <UserPen className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="secondary" size="sm" className="ml-1" onClick={() => handleDeleteClick(endereco.id)}>
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-gray-700">Nenhum endereço informado</p>
-                    )}
-                </CardContent>
+                                ))
+                            ) : (
+                                <p className="text-gray-700">Nenhum endereço informado</p>
+                            )}
+                        </CardContent>
+                    )
+                }
             </Card>
 
             {isModalOpen && selectedEnderecoId && (

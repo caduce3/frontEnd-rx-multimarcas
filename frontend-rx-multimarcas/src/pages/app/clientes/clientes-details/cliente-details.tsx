@@ -55,6 +55,7 @@ const DetalhesCliente = () => {
                     />
                     <ClienteEnderecosCard 
                         enderecos={cliente?.Enderecos ?? []}
+                        isLoading={isLoading}
                     />
                 </div>
                 <div>
