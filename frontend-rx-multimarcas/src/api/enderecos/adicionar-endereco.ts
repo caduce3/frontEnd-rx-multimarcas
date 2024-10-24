@@ -14,7 +14,17 @@ export interface AdicionarEnderecoClienteBody {
 
 export async function adicionarEnderecoCliente({ id_cliente, endereco }: AdicionarEnderecoClienteBody) {
     try {
-        const response = await api.post('/criar_endereco_cliente', { id_cliente, endereco });
+        const token = localStorage.getItem('authToken');
+        if (!token) throw new Error('No token found');
+
+        const response = await api.post('/criar_endereco_cliente', 
+            { id_cliente, endereco },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
         return response.data;
     } catch (error: any) {
         if (error.response) {

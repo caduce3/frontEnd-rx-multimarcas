@@ -17,7 +17,17 @@ export interface AdicionarClienteBody {
 
 export async function adicionarCliente({ nome, email, cpf, telefone, endereco }: AdicionarClienteBody) {
     try {
-        const response = await api.post('/registrar_cliente', { nome, email, cpf, telefone, endereco });
+        const token = localStorage.getItem('authToken');
+        if (!token) throw new Error('No token found');
+
+        const response = await api.post('/registrar_cliente', 
+            { nome, email, cpf, telefone, endereco },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
         return response.data;
     } catch (error: any) {
         if (error.response) {
