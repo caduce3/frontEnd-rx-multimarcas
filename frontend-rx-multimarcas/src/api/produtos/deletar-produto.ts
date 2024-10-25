@@ -8,7 +8,7 @@ export interface DeletarProdutoResponse {
     boolean: boolean;
 }
 
-export async function deletarProdutoCliente({ id_produto }: DeletarProdutoBody) {
+export async function deletarProduto({ id_produto }: DeletarProdutoBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
