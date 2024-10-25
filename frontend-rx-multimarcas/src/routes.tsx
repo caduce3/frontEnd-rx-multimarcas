@@ -8,6 +8,7 @@ import { NotFound } from './pages/404'
 import { Funcionarios } from './pages/app/funcionarios/funcionarios'
 import Clientes from './pages/app/clientes/clientes'
 import DetalhesCliente from './pages/app/clientes/clientes-details/cliente-details'
+import Produtos from './pages/app/produtos/produtos'
 
 export const router = createBrowserRouter([
     {
@@ -18,7 +19,8 @@ export const router = createBrowserRouter([
             {path: '/', element: <Dashboard />},
             {path: '/colaboradores', element: <Funcionarios />},
             {path: '/clientes', element: <Clientes />},
-            {path: 'clientes/:id', element: <DetalhesCliente />},
+            {path: '/clientes/:id', element: <DetalhesCliente />},
+            {path: '/produtos', element: <Produtos />},
         ]
     },
     {
