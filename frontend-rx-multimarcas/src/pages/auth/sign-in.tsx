@@ -54,7 +54,7 @@ export function SignIn() {
       const token = await authenticate({ email: values.email, senha: values.senha });
       // Armazenar o token no localStorage ou sessionStorage
       localStorage.setItem('authToken', token);
-
+      // const redirectURL = signInBySector(token);
       toast.success("Sucesso! Você está logado.");
       navigate("/");
     } catch (error) {
