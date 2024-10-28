@@ -2,8 +2,8 @@ import { api } from "@/lib/axios";
 
 export interface PegarVendasBody {
     page: number;
-    clienteId?: string;
-    funcionarioId?: string;
+    nome_cliente?: string;
+    nome_funcionario?: string;
 }
 
 export interface PegarVendasResponse {
@@ -51,12 +51,12 @@ export interface PegarVendasResponse {
 }
 
 
-export async function pegarVendas({ page, clienteId, funcionarioId }: PegarVendasBody) {
+export async function pegarVendas({ page, nome_cliente, nome_funcionario }: PegarVendasBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await api.post<PegarVendasResponse>('/pegar_vendas', { page, clienteId, funcionarioId }, {
+        const response = await api.post<PegarVendasResponse>('/pegar_vendas', { page, nome_cliente, nome_funcionario }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

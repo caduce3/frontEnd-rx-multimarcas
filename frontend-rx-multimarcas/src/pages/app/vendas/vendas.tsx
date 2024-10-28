@@ -7,6 +7,7 @@ import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { pegarVendas } from "@/api/vendas/pegar-vendas";
 import VendasTableRow from "./vendas-table-row";
+import VendasTableFilters from "./vendas-table-filters";
 
 const Vendas = () => {
 
@@ -19,12 +20,12 @@ const Vendas = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const page = searchParams.get('page') ?? 1;
 
-    const clienteId = searchParams.get('clienteId') ?? undefined;
-    const funcionarioId = searchParams.get('funcionarioId') ?? undefined;
+    const nome_cliente = searchParams.get('nome_cliente') ?? undefined;
+    const nome_funcionario = searchParams.get('nome_funcionario') ?? undefined;
 
     const {data, isLoading} = useQuery({
-        queryKey: ['vendas', page, clienteId, funcionarioId],
-        queryFn: () => pegarVendas({page: Number(page), clienteId, funcionarioId}),
+        queryKey: ['vendas', page, nome_cliente, nome_funcionario],
+        queryFn: () => pegarVendas({page: Number(page), nome_cliente, nome_funcionario}),
     })
 
     function handlePaginate(page: number) {
@@ -39,8 +40,8 @@ const Vendas = () => {
         <div className="shadow-lg rounded-lg p-4 w-full">
             <Helmet title="Clientes"/>
             <div className="flex flex-row gap-4 items-center">
-                {/* <ClientesTableFilters />
-                <AdicionarClientes /> */}
+                <VendasTableFilters />
+                {/* <AdicionarClientes /> */}
             </div>
             {
                 isLoading ? <PlayersTableSkeleton /> 
