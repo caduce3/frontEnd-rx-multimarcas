@@ -9,19 +9,30 @@ import {
 import { Pagination } from "@/components/pagination";
 import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getFuncionarios } from "@/api/get-funcionarios";
 import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import FuncionariosTableRow from "./funcionarios-table-row";
 import FuncionariosTableFilters from "./funcionarios-table-filters";
+import { verifyAccessByJwt } from "@/services/verificar-acesso-pagina";
+import { useEffect } from "react";
+import { toast } from "sonner";
   
 
 export function Funcionarios() {
     const token = useAuthRedirect();
+    const navigate = useNavigate();
 
     if (!token) {
         return null;
     }
+
+    useEffect(() => {
+        if (verifyAccessByJwt(token ?? '', ["PROPRIETARIO", "ADMINISTRADOR"]) === false) {
+            navigate("/");
+            toast.error("Você não tem permissão para acessar essa página");
+        }
+    }, [token, navigate]); 
 
     const [searchParams, setSearchParams] = useSearchParams();
     const page = searchParams.get('page') ?? 1;
