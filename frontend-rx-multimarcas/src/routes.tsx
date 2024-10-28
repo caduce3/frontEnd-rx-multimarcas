@@ -9,6 +9,7 @@ import { Funcionarios } from './pages/app/funcionarios/funcionarios'
 import Clientes from './pages/app/clientes/clientes'
 import DetalhesCliente from './pages/app/clientes/clientes-details/cliente-details'
 import Produtos from './pages/app/produtos/produtos'
+import Vendas from './pages/app/vendas/vendas'
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
             {path: '/clientes', element: <Clientes />},
             {path: '/clientes/:id', element: <DetalhesCliente />},
             {path: '/produtos', element: <Produtos />},
+            {path: '/vendas', element: <Vendas />},
         ]
     },
     {
