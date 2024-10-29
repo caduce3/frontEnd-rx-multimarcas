@@ -7,29 +7,25 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { queryClient } from "@/lib/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { PackagePlus, UserPlus, X, XIcon } from "lucide-react";
+import { PackagePlus, X, XIcon } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { getClientes } from "@/api/clientes/get-clientes";
+import { debounce } from "lodash";
 
-// Definir schema para cadastrar uma venda
 // Definir schema para cadastrar uma venda
 const cadastrarVendaSchema = z.object({
     clienteId: z.string(),
     funcionarioId: z.string(),
     tipoPagamento: z.union([z.literal("CREDITO"), z.literal("DEBITO"), z.literal("DINHEIRO")]),
-    desconto: z.string()
-        .transform((val) => parseFloat(val.replace(',', '.')))
-        .refine(val => !isNaN(val) && val >= 0, { message: "O desconto deve ser maior ou igual a 0." }),
+    desconto: z.number().refine(val => !isNaN(val) && val >= 0, { message: "O desconto deve ser maior ou igual a 0." }),
     itens: z.array(z.object({
         produtoId: z.string(),
-        unidadesProduto: z.string()
-            .transform((val) => parseFloat(val.replace(',', '.'))) // Transforma para número apenas durante a validação
-            .refine(val => !isNaN(val) && val >= 1, { message: "A quantidade deve ser maior ou igual a 1." }),
+        unidadesProduto: z.number().refine(val => !isNaN(val) && val >= 1, { message: "Deve ser maior ou igual a 1." }),
     }))
 });
-
 
 type CadastrarVendaFormValues = z.infer<typeof cadastrarVendaSchema>;
 
@@ -45,7 +41,7 @@ const CadastrarVendas = () => {
         }
     });
 
-    const { control, handleSubmit, reset } = form;
+    const { control, handleSubmit, reset, setValue } = form;
     const { fields, append, remove } = useFieldArray({
         control,
         name: "itens",
@@ -74,6 +70,29 @@ const CadastrarVendas = () => {
     }
 
     const [isOpen, setIsOpen] = useState(false);
+    
+    // Estados para sugestões de clientes
+    const [clientes, setClientes] = useState<Array<{ id: string; nome: string }>>([]);
+    const [showClienteSuggestions, setShowClienteSuggestions] = useState(false);
+    const [selectedClienteNome, setSelectedClienteNome] = useState("");
+
+    
+    const fetchClientes = async (nome: string) => {
+        try {
+            const response = await getClientes({ page: 1, nome });
+            setClientes(response.clientesList);
+            setShowClienteSuggestions(true);
+        } catch (error) {
+            console.error("Erro ao buscar clientes:", error);
+        }
+    };
+    const debouncedFetchClientes = debounce(fetchClientes, 300);
+
+    const handleSelectCliente = (cliente: { id: string; nome: string }) => {
+        setValue("clienteId", cliente.id);
+        setSelectedClienteNome(cliente.nome);
+        setShowClienteSuggestions(false);
+    };    
 
     function handleClearCadastroVenda() {
         reset();
@@ -96,20 +115,48 @@ const CadastrarVendas = () => {
                 <FormProvider {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4">
                         <div className=" gap-4">
-                            {/* Campos clienteId e funcionarioId lado a lado */}
                             <FormField
                                 control={control}
                                 name="clienteId"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col gap-1 w-full mb-3">
-                                        <FormLabel>Cliente ID</FormLabel>
+                                        <FormLabel>Cliente</FormLabel>
                                         <FormControl>
-                                            <Input className="h-9 w-full" placeholder="ID do cliente" {...field} />
+                                            <Input
+                                                className="h-9 w-full"
+                                                placeholder="Nome do Cliente"
+                                                {...field}
+                                                value={selectedClienteNome} // Bind the input value to field.value
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    setSelectedClienteNome(value); // Update the state
+                                                    field.onChange(value); // Update the form value
+                                                    if (value) {
+                                                        debouncedFetchClientes(value);
+                                                    } else {
+                                                        setShowClienteSuggestions(false);
+                                                    }
+                                                }}
+                                            />
                                         </FormControl>
+                                        {showClienteSuggestions && (
+                                            <ul className=" w-full bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-y-auto z-10 rounded-sm">
+                                                {clientes.slice(0, 5).map((cliente) => (
+                                                    <li
+                                                        key={cliente.id}
+                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
+                                                        onMouseDown={() => handleSelectCliente(cliente)}
+                                                    >
+                                                        {cliente.nome}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+
                             <FormField
                                 control={control}
                                 name="funcionarioId"
@@ -125,10 +172,9 @@ const CadastrarVendas = () => {
                             />
                         </div>
 
-                        {/* Array de itens com produtoId e unidadesProduto */}
-                        <div className="max-h-52 overflow-y-auto"> {/* Ajuste a altura máxima conforme necessário */}
+                        <div className="max-h-52 overflow-y-auto">
                             {fields.map((item, index) => (
-                                <div key={item.id} className="flex gap-4 border p-3 rounded-sm  mb-1">
+                                <div key={item.id} className="flex gap-4 border p-3 rounded-sm mb-1">
                                     <FormField
                                         control={control}
                                         name={`itens.${index}.produtoId`}
@@ -144,17 +190,17 @@ const CadastrarVendas = () => {
                                     />
                                     <FormField
                                         control={control}
-                                        name={`itens.${index}.unidadesProduto`} // Corrigir a interpolação aqui
+                                        name={`itens.${index}.unidadesProduto`}
                                         render={({ field }) => (
                                             <FormItem className="flex flex-col gap-1 w-full md:w-1/5">
                                                 <FormLabel>Quantidade</FormLabel>
                                                 <FormControl>
                                                     <Input 
-                                                        type="text" // Altere para 'text' para aceitar string
+                                                        type="text" 
                                                         className="h-9 w-full" 
                                                         placeholder="Quantidade" 
                                                         {...field} 
-                                                        onChange={(e) => field.onChange(e.target.value)} // Mantenha o valor como string
+                                                        onChange={(e) => field.onChange(e.target.value)} 
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -169,14 +215,12 @@ const CadastrarVendas = () => {
                             ))}
                         </div>
 
-
-                        <Button size="sm" variant="outline" type="button" onClick={() => append({ produtoId: "", unidadesProduto: 1 })} className="self-end mb-5">
+                        <Button type="button" size="sm" variant="outline" onClick={() => append({ produtoId: "", unidadesProduto: 1 })} className="self-end mb-5">
                             <PackagePlus className="h-4 w-4 mr-2" />
                             Adicionar Produto
                         </Button>
 
                         <div className="flex gap-4">
-                            {/* Seleção de tipo de pagamento */}
                             <FormField
                                 control={control}
                                 name="tipoPagamento"
@@ -200,7 +244,6 @@ const CadastrarVendas = () => {
                                 )}
                             />
 
-                            {/* Campo Desconto */}
                             <FormField
                                 control={control}
                                 name="desconto"
@@ -216,20 +259,23 @@ const CadastrarVendas = () => {
                             />
                         </div>
 
-                        <div className="flex gap-4">
-                            <Button type="submit" variant="default" size="sm" className="flex-1" disabled={isSubmitting}>
-                                <UserPlus className="mr-2 h-4 w-4" />
-                                {isSubmitting ? "Cadastrando..." : "Cadastrar"}
+                        <div className="flex justify-end">
+                            <Button
+                                type="submit"
+                                variant="default"
+                                className="flex items-center justify-center w-1/2"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Cadastrando..." : "Cadastrar Venda"}
                             </Button>
                             <Button
                                 type="button"
                                 variant="secondary"
-                                size="sm"
-                                className="flex-1"
+                                className="ml-2 flex items-center justify-center w-1/4"
                                 onClick={handleClearCadastroVenda}
                             >
                                 <X className="mr-2 h-4 w-4" />
-                                Cancelar cadastro
+                                Cancelar
                             </Button>
                         </div>
                     </form>
