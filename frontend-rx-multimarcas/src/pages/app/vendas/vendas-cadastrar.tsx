@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { getClientes } from "@/api/clientes/get-clientes";
 import { debounce } from "lodash";
+import { getFuncionarios } from "@/api/get-funcionarios";
 
 // Definir schema para cadastrar uma venda
 const cadastrarVendaSchema = z.object({
@@ -75,6 +76,10 @@ const CadastrarVendas = () => {
     const [clientes, setClientes] = useState<Array<{ id: string; nome: string }>>([]);
     const [showClienteSuggestions, setShowClienteSuggestions] = useState(false);
     const [selectedClienteNome, setSelectedClienteNome] = useState("");
+    // Estados para sugestões de funcionarios
+    const [funcionarios, setFuncionarios] = useState<Array<{ id: string; nome: string }>>([]);
+    const [showFuncionarioSuggestions, setShowFuncionarioSuggestions] = useState(false);
+    const [selectedFuncionarioNome, setSelectedFuncionarioNome] = useState("");
 
     
     const fetchClientes = async (nome: string) => {
@@ -86,13 +91,31 @@ const CadastrarVendas = () => {
             console.error("Erro ao buscar clientes:", error);
         }
     };
+
+    const fetchFuncionarios = async (nome: string) => {
+        try {
+            const response = await getFuncionarios({ page: 1, nome });
+            setFuncionarios(response.funcionariosList);
+            setShowFuncionarioSuggestions(true);
+        } catch (error) {
+            console.error("Erro ao buscar funcionários:", error);
+        }
+    }
+
     const debouncedFetchClientes = debounce(fetchClientes, 300);
+    const debouncedFetchFuncionarios = debounce(fetchFuncionarios, 300);
 
     const handleSelectCliente = (cliente: { id: string; nome: string }) => {
         setValue("clienteId", cliente.id);
         setSelectedClienteNome(cliente.nome);
         setShowClienteSuggestions(false);
     };    
+
+    const handleSelectFuncionario = (funcionario: { id: string; nome: string }) => {
+        setValue("funcionarioId", funcionario.id);
+        setSelectedFuncionarioNome(funcionario.nome);
+        setShowFuncionarioSuggestions(false);
+    };
 
     function handleClearCadastroVenda() {
         reset();
@@ -162,10 +185,38 @@ const CadastrarVendas = () => {
                                 name="funcionarioId"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col gap-1 w-full mb-3">
-                                        <FormLabel>Funcionário ID</FormLabel>
+                                        <FormLabel>Funcionário</FormLabel>
                                         <FormControl>
-                                            <Input className="h-9 w-full" placeholder="ID do funcionário" {...field} />
+                                            <Input
+                                                className="h-9 w-full"
+                                                placeholder="Nome do Funcionário"
+                                                {...field}
+                                                value={selectedFuncionarioNome} // Bind the input value to field.value
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    setSelectedFuncionarioNome(value); // Update the state
+                                                    field.onChange(value); // Update the form value
+                                                    if (value) {
+                                                        debouncedFetchFuncionarios(value);
+                                                    } else {
+                                                        setShowFuncionarioSuggestions(false);
+                                                    }
+                                                }}
+                                            />
                                         </FormControl>
+                                        {showFuncionarioSuggestions && (
+                                            <ul className=" w-full bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-y-auto z-10 rounded-sm">
+                                                {funcionarios.slice(0, 5).map((funcionario) => (
+                                                    <li
+                                                        key={funcionario.id}
+                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
+                                                        onMouseDown={() => handleSelectFuncionario(funcionario)}
+                                                    >
+                                                        {funcionario.nome}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                         <FormMessage />
                                     </FormItem>
                                 )}
