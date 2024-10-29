@@ -8,6 +8,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import { pegarVendas } from "@/api/vendas/pegar-vendas";
 import VendasTableRow from "./vendas-table-row";
 import VendasTableFilters from "./vendas-table-filters";
+import CadastrarVendas from "./vendas-cadastrar";
 
 const Vendas = () => {
 
@@ -41,7 +42,7 @@ const Vendas = () => {
             <Helmet title="Clientes"/>
             <div className="flex flex-row gap-4 items-center">
                 <VendasTableFilters />
-                {/* <AdicionarClientes /> */}
+                <CadastrarVendas />
             </div>
             {
                 isLoading ? <PlayersTableSkeleton /> 
