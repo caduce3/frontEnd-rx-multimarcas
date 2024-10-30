@@ -16,6 +16,7 @@ import { getClientes } from "@/api/clientes/get-clientes";
 import { debounce } from "lodash";
 import { getFuncionarios } from "@/api/get-funcionarios";
 import { mascaraNumero } from "@/services/onChangeNumero";
+import { pegarProdutos } from "@/api/produtos/pegar-produtos";
 
 // Definir schema para cadastrar uma venda
 const cadastrarVendaSchema = z.object({
@@ -67,6 +68,8 @@ const CadastrarVendas = () => {
             setSelectedFuncionarioNome("");
             setShowFuncionarioSuggestions(false);
             setIsOpen(false);
+            setSelectedProdutoNomes([]);
+            setShowProdutoSuggestions(false);
         } catch (error: any) {
             const errorMessage = error instanceof Error ? error.message : "Erro inesperado ao cadastrar venda.";
             toast.error(errorMessage);
@@ -81,10 +84,16 @@ const CadastrarVendas = () => {
     const [clientes, setClientes] = useState<Array<{ id: string; nome: string }>>([]);
     const [showClienteSuggestions, setShowClienteSuggestions] = useState(false);
     const [selectedClienteNome, setSelectedClienteNome] = useState("");
+
     // Estados para sugestões de funcionarios
     const [funcionarios, setFuncionarios] = useState<Array<{ id: string; nome: string }>>([]);
     const [showFuncionarioSuggestions, setShowFuncionarioSuggestions] = useState(false);
     const [selectedFuncionarioNome, setSelectedFuncionarioNome] = useState("");
+
+    // Estados para sugestões de produtos
+    const [produtos, setProdutos] = useState<Array<{ id: string; nome: string }>>([]);
+    const [showProdutoSuggestions, setShowProdutoSuggestions] = useState(false);
+    const [selectedProdutoNomes, setSelectedProdutoNomes] = useState<string[]>([]);
 
     
     const fetchClientes = async (nome: string) => {
@@ -107,8 +116,19 @@ const CadastrarVendas = () => {
         }
     }
 
+    const fetchProdutos = async (nome: string) => {
+        try {
+            const response = await pegarProdutos({ page: 1, nome });
+            setProdutos(response.produtosList);
+            setShowProdutoSuggestions(true);
+        } catch (error) {
+            console.error("Erro ao buscar produtos:", error);
+        }
+    };
+
     const debouncedFetchClientes = debounce(fetchClientes, 150);
     const debouncedFetchFuncionarios = debounce(fetchFuncionarios, 150);
+    const debouncedFetchProdutos = debounce(fetchProdutos, 150);
 
     const handleSelectCliente = (cliente: { id: string; nome: string }) => {
         setValue("clienteId", cliente.id);
@@ -122,6 +142,14 @@ const CadastrarVendas = () => {
         setShowFuncionarioSuggestions(false);
     };
 
+    const handleSelectProduto = (produto: { id: string; nome: string }, index: number) => {
+        setValue(`itens.${index}.produtoId`, produto.id);
+        const updatedSelectedProdutoNomes = [...selectedProdutoNomes];
+        updatedSelectedProdutoNomes[index] = produto.nome; // Atualiza apenas o nome do produto do índice correspondente
+        setSelectedProdutoNomes(updatedSelectedProdutoNomes);
+        setShowProdutoSuggestions(false);
+    };
+
     function handleClearCadastroVenda() {
         reset();
         setSelectedClienteNome("");
@@ -129,7 +157,10 @@ const CadastrarVendas = () => {
         setSelectedFuncionarioNome("");
         setShowFuncionarioSuggestions(false);
         setIsOpen(false);
+        setSelectedProdutoNomes([]); // Limpa todos os nomes dos produtos
+        setShowProdutoSuggestions(false);
     }
+    
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -242,8 +273,38 @@ const CadastrarVendas = () => {
                                             <FormItem className="flex flex-col gap-1 w-full md:w-1/2">
                                                 <FormLabel>ID do Produto</FormLabel>
                                                 <FormControl>
-                                                    <Input className="h-9 w-full" placeholder="ID do produto" {...field} />
+                                                    <Input
+                                                        className="h-9 w-full"
+                                                        placeholder="Nome do Produto"
+                                                        {...field}
+                                                        value={selectedProdutoNomes[index] || ""} // Use o nome do produto específico para o índice
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            const updatedSelectedProdutoNomes = [...selectedProdutoNomes];
+                                                            updatedSelectedProdutoNomes[index] = value; // Atualiza o nome do produto no índice correspondente
+                                                            setSelectedProdutoNomes(updatedSelectedProdutoNomes);
+                                                            field.onChange(value);
+                                                            if (value) {
+                                                                debouncedFetchProdutos(value);
+                                                            } else {
+                                                                setShowProdutoSuggestions(false);
+                                                            }
+                                                        }}
+                                                    />
                                                 </FormControl>
+                                                {showProdutoSuggestions && (
+                                                    <ul className="w-full bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-y-auto z-10 rounded-sm">
+                                                        {produtos.slice(0, 5).map((produto) => (
+                                                            <li
+                                                                key={produto.id}
+                                                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
+                                                                onMouseDown={() => handleSelectProduto(produto, index)}
+                                                            >
+                                                                {produto.nome}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -312,7 +373,7 @@ const CadastrarVendas = () => {
                                 name="desconto"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col gap-1 w-full md:w-1/2">
-                                        <FormLabel>Desconto</FormLabel>
+                                        <FormLabel>Desconto %</FormLabel>
                                         <FormControl>
                                             <Input 
                                                 type="text" 
