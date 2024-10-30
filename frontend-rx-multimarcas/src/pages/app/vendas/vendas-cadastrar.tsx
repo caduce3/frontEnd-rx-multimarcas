@@ -107,8 +107,8 @@ const CadastrarVendas = () => {
         }
     }
 
-    const debouncedFetchClientes = debounce(fetchClientes, 300);
-    const debouncedFetchFuncionarios = debounce(fetchFuncionarios, 300);
+    const debouncedFetchClientes = debounce(fetchClientes, 150);
+    const debouncedFetchFuncionarios = debounce(fetchFuncionarios, 150);
 
     const handleSelectCliente = (cliente: { id: string; nome: string }) => {
         setValue("clienteId", cliente.id);
@@ -252,7 +252,7 @@ const CadastrarVendas = () => {
                                         control={control}
                                         name={`itens.${index}.unidadesProduto`}
                                         render={({ field }) => (
-                                            <FormItem className="flex flex-col gap-1 w-full md:w-1/5">
+                                            <FormItem className="flex flex-col gap-1 w-full md:w-1/3">
                                                 <FormLabel>Quantidade</FormLabel>
                                                 <FormControl>
                                                     <Input 
@@ -271,9 +271,8 @@ const CadastrarVendas = () => {
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="button" size="sm" variant="destructive" onClick={() => remove(index)} className="self-end flex-1">
-                                        <XIcon className="h-4 w-4 mr-1" />
-                                        Remover
+                                    <Button type="button" size="sm" variant="destructive" onClick={() => remove(index)} className="self-end">
+                                        <XIcon className="h-4 w-4" />
                                     </Button>
                                 </div>
                             ))}
