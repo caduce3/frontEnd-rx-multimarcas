@@ -7,7 +7,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { queryClient } from "@/lib/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { PackagePlus, X, XIcon } from "lucide-react";
+import { PackagePlus, ShoppingBag, X, XIcon } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
@@ -127,7 +127,7 @@ const CadastrarVendas = () => {
             <DialogTrigger asChild>
                 <Button variant="default" size="sm" className="flex items-center justify-between w-48">
                     <span className="text-sm font-semibold">Cadastrar venda</span>
-                    <PackagePlus className="h-4 w-4" />
+                    <ShoppingBag className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent>
@@ -310,19 +310,22 @@ const CadastrarVendas = () => {
                             />
                         </div>
 
-                        <div className="flex justify-end">
+                        <div className="flex items-center justify-center">
                             <Button
                                 type="submit"
                                 variant="default"
-                                className="flex items-center justify-center w-1/2"
+                                size="sm"
+                                className="flex w-1/2"
                                 disabled={isSubmitting}
-                            >
+                            >   
+                                <ShoppingBag className="mr-2 h-4 w-4" />
                                 {isSubmitting ? "Cadastrando..." : "Cadastrar Venda"}
                             </Button>
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className="ml-2 flex items-center justify-center w-1/4"
+                                size="sm"
+                                className="ml-2 flex w-1/2"
                                 onClick={handleClearCadastroVenda}
                             >
                                 <X className="mr-2 h-4 w-4" />
