@@ -17,6 +17,7 @@ import { debounce } from "lodash";
 import { getFuncionarios } from "@/api/get-funcionarios";
 import { mascaraNumero } from "@/services/onChangeNumero";
 import { pegarProdutos } from "@/api/produtos/pegar-produtos";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 // Definir schema para cadastrar uma venda
 const cadastrarVendaSchema = z.object({
@@ -81,17 +82,17 @@ const CadastrarVendas = () => {
     const [isOpen, setIsOpen] = useState(false);
     
     // Estados para sugestões de clientes
-    const [clientes, setClientes] = useState<Array<{ id: string; nome: string }>>([]);
+    const [clientes, setClientes] = useState<Array<{ id: string; nome: string; email: string }>>([]);
     const [showClienteSuggestions, setShowClienteSuggestions] = useState(false);
     const [selectedClienteNome, setSelectedClienteNome] = useState("");
 
     // Estados para sugestões de funcionarios
-    const [funcionarios, setFuncionarios] = useState<Array<{ id: string; nome: string }>>([]);
+    const [funcionarios, setFuncionarios] = useState<Array<{ id: string; nome: string; email: string }>>([]);
     const [showFuncionarioSuggestions, setShowFuncionarioSuggestions] = useState(false);
     const [selectedFuncionarioNome, setSelectedFuncionarioNome] = useState("");
 
     // Estados para sugestões de produtos
-    const [produtos, setProdutos] = useState<Array<{ id: string; nome: string }>>([]);
+    const [produtos, setProdutos] = useState<Array<{ id: string; nome: string; preco: number; quantidadeDisponivel: number; }>>([]);
     const [showProdutoSuggestions, setShowProdutoSuggestions] = useState(false);
     const [selectedProdutoNomes, setSelectedProdutoNomes] = useState<string[]>([]);
 
@@ -207,10 +208,20 @@ const CadastrarVendas = () => {
                                                 {clientes.slice(0, 5).map((cliente) => (
                                                     <li
                                                         key={cliente.id}
-                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
+                                                        className="px-4 py-2 flex cursor-pointer hover:bg-gray-100 rounded-sm"
                                                         onMouseDown={() => handleSelectCliente(cliente)}
                                                     >
-                                                        {cliente.nome}
+                                                        <div className="flex">
+                                                            <Avatar className="mr-2 bg-black text-white">
+                                                                <AvatarFallback className="bg-black text-white">
+                                                                    {cliente.nome ? cliente.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="flex flex-col">
+                                                                <p className="text-sm">{cliente.nome}</p> 
+                                                                <p className="text-xs text-gray-400">{cliente.email}</p>
+                                                            </div>
+                                                        </div>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -252,7 +263,17 @@ const CadastrarVendas = () => {
                                                         className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
                                                         onMouseDown={() => handleSelectFuncionario(funcionario)}
                                                     >
-                                                        {funcionario.nome}
+                                                        <div className="flex">
+                                                            <Avatar className="mr-2 bg-black text-white">
+                                                                <AvatarFallback className="bg-black text-white">
+                                                                    {funcionario.nome ? funcionario.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="flex flex-col">
+                                                                <p className="text-sm">{funcionario.nome}</p> 
+                                                                <p className="text-xs text-gray-400">{funcionario.email}</p>
+                                                            </div>
+                                                        </div>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -300,7 +321,18 @@ const CadastrarVendas = () => {
                                                                 className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
                                                                 onMouseDown={() => handleSelectProduto(produto, index)}
                                                             >
-                                                                {produto.nome}
+                                                                <div className="flex items-center">
+                                                                    <Avatar className="mr-2 bg-black text-white">
+                                                                        <AvatarFallback className="bg-black text-white">
+                                                                            {produto.nome ? produto.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
+                                                                        </AvatarFallback>
+                                                                    </Avatar>
+                                                                    <div className="flex flex-col">
+                                                                        <p className="text-sm">{produto.nome}</p> 
+                                                                        <p className="text-xs text-gray-400">R$ {produto.preco}</p>
+                                                                        <p className="text-xs text-gray-400">{produto.quantidadeDisponivel} unid. restantes</p>
+                                                                    </div>
+                                                                </div>
                                                             </li>
                                                         ))}
                                                     </ul>

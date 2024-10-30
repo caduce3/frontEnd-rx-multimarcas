@@ -16,6 +16,7 @@ import {
 import { getFuncionarios, GetFuncionariosResponse } from "@/api/get-funcionarios";
 import { debounce } from "lodash";
 import { getClientes, GetClientesResponse } from "@/api/clientes/get-clientes";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const vendasFilterSchema = z.object({
     nome_cliente: z.string().optional(),
@@ -158,7 +159,17 @@ const VendasTableFilters = () => {
                                             className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
                                             onMouseDown={() => handleSelectCliente(cliente.nome)}
                                         >
-                                            {cliente.nome}
+                                            <div className="flex">
+                                                <Avatar className="mr-2 bg-black text-white">
+                                                    <AvatarFallback className="bg-black text-white">
+                                                        {cliente.nome ? cliente.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm">{cliente.nome}</p> 
+                                                    <p className="text-xs text-gray-400">{cliente.email}</p>
+                                                </div>
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>
@@ -182,7 +193,17 @@ const VendasTableFilters = () => {
                                             className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
                                             onMouseDown={() => handleSelectFuncionario(funcionario.nome)}
                                         >
-                                            {funcionario.nome}
+                                            <div className="flex">
+                                                <Avatar className="mr-2 bg-black text-white">
+                                                    <AvatarFallback className="bg-black text-white">
+                                                        {funcionario.nome ? funcionario.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm">{funcionario.nome}</p> 
+                                                    <p className="text-xs text-gray-400">{funcionario.email}</p>
+                                                </div>
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>
