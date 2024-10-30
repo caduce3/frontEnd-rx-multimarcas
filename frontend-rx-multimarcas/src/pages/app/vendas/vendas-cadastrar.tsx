@@ -15,16 +15,17 @@ import { z } from "zod";
 import { getClientes } from "@/api/clientes/get-clientes";
 import { debounce } from "lodash";
 import { getFuncionarios } from "@/api/get-funcionarios";
+import { mascaraNumero } from "@/services/onChangeNumero";
 
 // Definir schema para cadastrar uma venda
 const cadastrarVendaSchema = z.object({
     clienteId: z.string(),
     funcionarioId: z.string(),
     tipoPagamento: z.union([z.literal("CREDITO"), z.literal("DEBITO"), z.literal("DINHEIRO")]),
-    desconto: z.number().refine(val => !isNaN(val) && val >= 0, { message: "O desconto deve ser maior ou igual a 0." }),
+    desconto: z.number().min(0, { message: "O desconto deve ser maior ou igual a 0." }),
     itens: z.array(z.object({
         produtoId: z.string(),
-        unidadesProduto: z.number().refine(val => !isNaN(val) && val >= 1, { message: "Deve ser maior ou igual a 1." }),
+        unidadesProduto: z.number().min(1, { message: "Deve ser maior ou igual a 1." }),
     }))
 });
 
@@ -61,6 +62,10 @@ const CadastrarVendas = () => {
             toast.success("Venda cadastrada com sucesso!");
             queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("vendas") });
             reset();
+            setSelectedClienteNome("");
+            setShowClienteSuggestions(false);
+            setSelectedFuncionarioNome("");
+            setShowFuncionarioSuggestions(false);
             setIsOpen(false);
         } catch (error: any) {
             const errorMessage = error instanceof Error ? error.message : "Erro inesperado ao cadastrar venda.";
@@ -119,6 +124,10 @@ const CadastrarVendas = () => {
 
     function handleClearCadastroVenda() {
         reset();
+        setSelectedClienteNome("");
+        setShowClienteSuggestions(false);
+        setSelectedFuncionarioNome("");
+        setShowFuncionarioSuggestions(false);
         setIsOpen(false);
     }
 
@@ -251,7 +260,11 @@ const CadastrarVendas = () => {
                                                         className="h-9 w-full" 
                                                         placeholder="Quantidade" 
                                                         {...field} 
-                                                        onChange={(e) => field.onChange(e.target.value)} 
+                                                        onChange={(e) => {
+                                                            const maskedValue = mascaraNumero(e.target.value);
+                                                            const numericValue = parseFloat(maskedValue.replace(',', '.'));
+                                                            field.onChange(isNaN(numericValue) ? undefined : numericValue);
+                                                        }}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -266,7 +279,7 @@ const CadastrarVendas = () => {
                             ))}
                         </div>
 
-                        <Button type="button" size="sm" variant="outline" onClick={() => append({ produtoId: "", unidadesProduto: 1 })} className="self-end mb-5">
+                        <Button type="button" size="sm" variant="outline" onClick={() => append({ produtoId: "", unidadesProduto: 0 })} className="self-end mb-5">
                             <PackagePlus className="h-4 w-4 mr-2" />
                             Adicionar Produto
                         </Button>
@@ -302,7 +315,17 @@ const CadastrarVendas = () => {
                                     <FormItem className="flex flex-col gap-1 w-full md:w-1/2">
                                         <FormLabel>Desconto</FormLabel>
                                         <FormControl>
-                                            <Input type="number" className="h-9 w-full" placeholder="Desconto" {...field} />
+                                            <Input 
+                                                type="text" 
+                                                className="h-9 w-full" 
+                                                placeholder="Desconto" 
+                                                {...field} 
+                                                onChange={(e) => {
+                                                    const maskedValue = mascaraNumero(e.target.value);
+                                                    const numericValue = parseFloat(maskedValue.replace(',', '.'));
+                                                    field.onChange(isNaN(numericValue) ? undefined : numericValue);
+                                                }}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
