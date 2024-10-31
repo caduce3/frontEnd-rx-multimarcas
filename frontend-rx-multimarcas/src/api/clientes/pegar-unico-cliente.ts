@@ -11,8 +11,8 @@ export interface PegarUnicoClienteResponse {
         email: string;
         telefone: string;
         cpf: string;
-        dateCreated: Date;
-        dateUpdated: Date;
+        dateCreated: string;
+        dateUpdated: string;
         Enderecos: {
             id: string;
             rua: string;
@@ -21,8 +21,8 @@ export interface PegarUnicoClienteResponse {
             cidade: string;
             estado: string;
             cep: string;
-            date_created: Date;
-            date_updated: Date;
+            date_created: string;
+            date_updated: string;
             clientId: string;
         }[];
         Carrinho: {
@@ -31,8 +31,8 @@ export interface PegarUnicoClienteResponse {
             funcionarioId: string;
             valorTotal: number;
             total_deposit_amount: number;
-            date_created: Date;
-            date_updated: Date;
+            dateCreated: string;
+            dateUpdated: string;
         }[];
     }
 }

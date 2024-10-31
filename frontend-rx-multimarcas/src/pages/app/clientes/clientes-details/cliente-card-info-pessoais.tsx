@@ -36,7 +36,7 @@ const ClienteDetalhesPessoaisCard: React.FC<ClienteDetalhesPessoaisProps> = ({ n
                             <CardDescription>Informações pessoais</CardDescription>
                         </div>
                         {/* Evento onClick para abrir o modal */}
-                        <Button variant="outline" size="sm" onClick={handleDetailsClick}>
+                        <Button variant="default" size="sm" onClick={handleDetailsClick}>
                             <UserPen className="h-4 w-4 mr-2" />
                             <p className="text-sm">Editar</p>
                         </Button>
