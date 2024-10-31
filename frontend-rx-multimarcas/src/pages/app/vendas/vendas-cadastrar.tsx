@@ -106,7 +106,7 @@ const CadastrarVendas = () => {
                     <ShoppingBag className="h-4 w-4" />
                 </Button>
             </SheetTrigger>
-            <SheetContent side="right">
+            <SheetContent side="right" className="overflow-y-auto max-h-screen">
                 <SheetHeader>
                     <SheetTitle>Cadastrar venda</SheetTitle>
                 </SheetHeader>
@@ -191,6 +191,19 @@ const CadastrarVendas = () => {
                                     )}
                                 />
                             </div>
+                            {/* essa div terá a soma de cada produto - o desconto para mostrar o total */}
+                            <div className="flex flex-col border p-3 rounded-md ">
+                                <p className="text-sm font-extralight text-gray-700 mb-1">
+                                    Subtotal: <span className="text-gray-900 font-semibold">R$ {produtosSelecionados.reduce((acc, produto) => acc + (produto.precoProduto * produto.unidadesProduto), 0).toFixed(2)} </span>
+                                </p>
+                                <p className="text-sm font-extralight text-gray-700 mb-1">
+                                    Desconto: <span className="text-gray-900 font-semibold">{formState.dirtyFields.desconto ? form.getValues().desconto : 0} %</span>
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    Total: R$ {(produtosSelecionados.reduce((acc, produto) => acc + (produto.precoProduto * produto.unidadesProduto), 0) - (formState.dirtyFields.desconto ? form.getValues().desconto : 0)).toFixed(2)}
+                                </p>
+                            </div>
+
 
                             <div className="">
                                 <Button
