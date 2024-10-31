@@ -85,7 +85,7 @@ export function ClienteInformacoesPessoaisDialog({ isOpen, onClose, clienteId }:
                 email: data.email,
                 cpf: data.cpf,
                 telefone: data.telefone,
-                dateCreated: informacoesPessoais?.cliente.dateCreated ?? new Date(),
+                dateCreated: informacoesPessoais?.cliente.dateCreated ? new Date(informacoesPessoais.cliente.dateCreated) : new Date(),
                 dateUpdated: new Date(), 
             });
             toast.success("Informações pessoais atualizadas com sucesso!");
