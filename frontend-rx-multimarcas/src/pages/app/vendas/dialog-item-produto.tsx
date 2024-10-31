@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { mascaraNumero } from "@/services/onChangeNumero";
 import { PackagePlus } from "lucide-react";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { Label } from "@/components/ui/label";
 
 // Definindo o tipo de Produto
 type Produto = {
@@ -81,6 +82,11 @@ const AdicionarProdutoDialog = ({
             return;
         }
 
+        if (selectedProduto.quantidadeDisponivel < quantidade) {
+            toast.error("Quantidade indisponível no estoque.");
+            return;
+        }
+
         const novoProduto: Produto = {
             produtoId: produtoId,
             unidadesProduto: quantidade,
@@ -109,61 +115,77 @@ const AdicionarProdutoDialog = ({
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Adicionar Produto</DialogTitle>
-                    <DialogDescription>Selecione o produto e sua quantidade.</DialogDescription>
+                    <DialogDescription className="text-sm">Selecione o produto e sua quantidade.</DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-4">
-                    <Input
-                        {...register("produtoId")}
-                        placeholder="Nome do Produto"
-                        value={produtoNome} // Exibir o nome do produto
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            setProdutoNome(value); // Atualiza o nome do produto
-                            setProdutoId(""); // Limpa o ID do produto
-                            debouncedFetchProdutos(value); // Chama a busca de produtos
-                        }}
-                        onFocus={() => setShowProdutoSuggestions(false)} // Ocultar sugestões ao focar no input
-                    />
-                    {showProdutoSuggestions && produtos.length > 0 && (
-                        <div>
-                            <ul className="w-full bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-y-auto z-10 rounded-sm">
-                                {produtos.slice(0, 5).map((produto) => (
-                                    <li
-                                        key={produto.id}
-                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
-                                    >
-                                        <div className="flex items-center" onClick={() => handleSelectProduto(produto, produtos.indexOf(produto))}>
-                                            <Avatar className="mr-2 bg-black text-white">
-                                                <AvatarFallback className="bg-black text-white">
-                                                    {produto.nome ? produto.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex flex-col">
-                                                <p className="text-sm">{produto.nome}</p>
-                                                <p className="text-xs text-gray-400">R$ {produto.preco}</p>
-                                                <p className="text-xs text-gray-400">{produto.quantidadeDisponivel} unid. restantes</p>
+                <div className="flex gap-4">
+                    <div className="w-full">
+                        <Label>Produto</Label>
+                        <Input
+                            {...register("produtoId")}
+                            placeholder="Nome do Produto"
+                            value={produtoNome} // Exibir o nome do produto
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setProdutoNome(value); // Atualiza o nome do produto
+                                setProdutoId(""); // Limpa o ID do produto
+                                debouncedFetchProdutos(value); // Chama a busca de produtos
+                            }}
+                            onFocus={() => setShowProdutoSuggestions(false)} // Ocultar sugestões ao focar no input
+                        />
+                        {showProdutoSuggestions && produtos.length > 0 && (
+                            <div>
+                                <ul className="w-full bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-y-auto z-10 rounded-sm">
+                                    {produtos.slice(0, 5).map((produto) => (
+                                        <li
+                                            key={produto.id}
+                                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 rounded-sm"
+                                        >
+                                            <div className="flex items-center" onClick={() => handleSelectProduto(produto, produtos.indexOf(produto))}>
+                                                <Avatar className="mr-2 bg-black text-white">
+                                                    <AvatarFallback className="bg-black text-white">
+                                                        {produto.nome ? produto.nome.split(' ').map(n => n.charAt(0).toUpperCase()).join('') : '?'}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm">{produto.nome}</p>
+                                                    <p className="text-xs text-gray-400">R$ {produto.preco}</p>
+                                                    <p className="text-xs text-gray-400">{produto.quantidadeDisponivel} unid. restantes</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    <Input
-                        type="text"
-                        {...register("unidadesProduto")}
-                        placeholder="Quantidade"
-                        value={quantidade}
-                        onChange={(e) => {
-                            const maskedValue = mascaraNumero(e.target.value);
-                            const numericValue = parseFloat(maskedValue.replace(',', '.'));
-                            setQuantidade(isNaN(numericValue) ? 0 : numericValue);
-                        }}
-                    />
-                    <Button onClick={handleAddProduto} variant="outline">
-                        Adicionar
-                    </Button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                    <div className="w-1/4">
+                        <Label>Quantidade</Label>
+                        <Input
+                            type="text"
+                            {...register("unidadesProduto")}
+                            placeholder="Quantidade"
+                            value={quantidade}
+                            onChange={(e) => {
+                                const maskedValue = mascaraNumero(e.target.value);
+                                const numericValue = parseFloat(maskedValue.replace(',', '.'));
+                                setQuantidade(isNaN(numericValue) ? 0 : numericValue);
+                            }}
+                        />
+                    </div>
                 </div>
+                {/* Aqui será uma div que irá calcular e mostrar o valor total, será o preço do produto x quantidade */}
+        
+                <div className="flex flex-col">
+                    <p className="text-sm">{produtoNome}</p>
+                    <p className="text-sm text-gray-400">Estoque: {produtos.find(p => p.id === produtoId)?.quantidadeDisponivel} disponíveis</p>
+                    <p className="text-sm text-gray-400">R$ {produtoId ? quantidade : ""} x {(produtos.find(p => p.id === produtoId)?.preco ?? 0)} unid.</p>
+                    <p className="text-sm text-gray-400">Subtotal: <span className="text-green-500">R$ {(produtoId ? quantidade * (produtos.find(p => p.id === produtoId)?.preco ?? 0) : 0).toFixed(2)}</span></p>
+                </div>
+                
+                <Button onClick={handleAddProduto} variant="default" size="sm">
+                    <PackagePlus className="h-5 w-5 mr-2" />
+                    Adicionar produto
+                </Button>
             </DialogContent>
         </Dialog>
     );
