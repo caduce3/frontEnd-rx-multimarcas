@@ -8,6 +8,7 @@ import { formatCurrency } from "@/services/formated-currency-brl";
 import { formatDateTimeToPTBR } from "@/services/formated-data-pt-br";
 import { Search, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export interface VendasTableRowProps {
@@ -52,7 +53,6 @@ export interface VendasTableRowProps {
 }
 
 const VendasTableRow = ({ vendas }: VendasTableRowProps) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleDeleteClick = () => {
@@ -74,6 +74,12 @@ const VendasTableRow = ({ vendas }: VendasTableRowProps) => {
         }
     };
 
+    const navigate = useNavigate();
+
+    const handleDetailsClick = () => {
+        navigate(`/vendas/${vendas.id}`);
+    }
+
     return (
         <>
             <TableRow>
@@ -84,7 +90,7 @@ const VendasTableRow = ({ vendas }: VendasTableRowProps) => {
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">{formatCurrency(vendas.valorTotal)}</TableCell>
                 <TableCell>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={handleDetailsClick}>
                         <Search className="h-4 w-4" />
                         <span className="sr-only">Detalhes do cliente</span>
                     </Button>
