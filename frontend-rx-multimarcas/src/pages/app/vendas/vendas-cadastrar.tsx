@@ -56,7 +56,7 @@ const CadastrarVendas = () => {
         }
     });
 
-    const { control, handleSubmit, reset, setValue } = form;
+    const { control, handleSubmit, reset, setValue, formState } = form;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { mutateAsync: cadastrarVendaFn } = useMutation({
@@ -198,7 +198,7 @@ const CadastrarVendas = () => {
                                     variant="default"
                                     size="sm"
                                     className="flex w-full mb-2"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || !formState.isValid}
                                 >   
                                     <ShoppingBag className="mr-2 h-4 w-4" />
                                     {isSubmitting ? "Cadastrando..." : "Cadastrar Venda"}
