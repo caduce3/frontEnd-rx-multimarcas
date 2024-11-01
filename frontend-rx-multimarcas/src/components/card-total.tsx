@@ -8,6 +8,7 @@ interface CardTotalGeralProps {
   Icon: LucideIcon;
   format?: boolean; // Option to format the value
   isLoading?: boolean; // Optional prop to handle loading state
+  description: string;
 }
 
 export function CardTotalGeral({
@@ -15,7 +16,8 @@ export function CardTotalGeral({
   totalValue,
   Icon,
   format = false,
-  isLoading = false
+  isLoading = false,
+  description,
 }: CardTotalGeralProps) {
   
   const formatToBRL = (value: number) => {
@@ -24,7 +26,7 @@ export function CardTotalGeral({
   const displayValue = format ? formatToBRL(totalValue) : totalValue.toString();
 
   return (
-    <Card className="w-full max-w-sm mx-auto p-4 sm:max-w-md md:max-w-lg lg:max-w-xl rounded-xl">
+    <Card className="w-full max-w-sm mx-auto p-1 sm:max-w-md md:max-w-lg lg:max-w-xl rounded-xl m-1 shadow-lg">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
         <CardTitle className="text-base font-semibold">
           {isLoading ? <Skeleton className="h-4 w-40"/> : cardTitle}
@@ -33,10 +35,11 @@ export function CardTotalGeral({
       </CardHeader>
       <CardContent className="space-y-1">
         <span className="text-2xl font-bold tracking-tight block">{isLoading ? <Skeleton className="h-4 w-40"/> : displayValue}</span>
-        {/* <p className="text-xs text-muted-foreground">
-          <span className={`text-${percentageColor}`}>{percentageChange} </span>
-          em relação ao mês anterior
-        </p> */}
+        <p className="text-xs text-muted-foreground">
+          {isLoading ? <Skeleton className="h-4 w-40"/> :
+            description
+          }
+        </p>
       </CardContent>
     </Card>
   );

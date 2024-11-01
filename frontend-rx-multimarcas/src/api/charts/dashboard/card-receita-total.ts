@@ -6,7 +6,9 @@ export interface CardReceitaTotalBody {
 }
 
 export interface CardReceitaTotalResponse {
-    receitaTotal: number;
+    qtd: {
+        receitaTotal: number;
+    }
 }
 
 export async function CardReceitaTotalBody({ date_init, date_finish }: CardReceitaTotalBody) {

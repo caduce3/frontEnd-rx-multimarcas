@@ -6,7 +6,9 @@ export interface CardQtdVendasBody {
 }
 
 export interface CardQtdVendasResponse {
-    quantidadeTotalCarrinho: number;
+    qtd: {
+        quantidadeTotalCarrinho: number;
+    }
 }
 
 export async function CardQtdVendasBody({ date_init, date_finish }: CardQtdVendasBody) {
