@@ -11,12 +11,12 @@ import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getFuncionarios } from "@/api/get-funcionarios";
-import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import FuncionariosTableRow from "./funcionarios-table-row";
 import FuncionariosTableFilters from "./funcionarios-table-filters";
 import { verifyAccessByJwt } from "@/services/verificar-acesso-pagina";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { TableSkeleton } from "@/components/table-skeleton";
   
 
 export function Funcionarios() {
@@ -61,7 +61,7 @@ export function Funcionarios() {
                 <FuncionariosTableFilters />
             </div>
             {
-                isLoading ? <PlayersTableSkeleton /> 
+                isLoading ? <TableSkeleton /> 
                 :
                 <Table className=" rounded-md border mt-5">
                     <TableHeader>

@@ -3,12 +3,12 @@ import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
-import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { pegarVendas } from "@/api/vendas/pegar-vendas";
 import VendasTableRow from "./vendas-table-row";
 import VendasTableFilters from "./vendas-table-filters";
 import CadastrarVendas from "./vendas-cadastrar";
+import { TableSkeleton } from "@/components/table-skeleton";
 
 const Vendas = () => {
 
@@ -45,7 +45,7 @@ const Vendas = () => {
                 <CadastrarVendas />
             </div>
             {
-                isLoading ? <PlayersTableSkeleton /> 
+                isLoading ? <TableSkeleton /> 
                 :
                 <Table className=" rounded-md border mt-5">
                     <TableHeader>

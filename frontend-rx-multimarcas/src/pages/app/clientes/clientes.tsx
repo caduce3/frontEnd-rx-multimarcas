@@ -4,11 +4,11 @@ import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
-import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import ClientesTableFilters from "./clientes-table-filters";
 import ClientesTableRow from "./clientes-table-row";
 import AdicionarClientes from "./clientes-adicionar";
+import { TableSkeleton } from "@/components/table-skeleton";
 
 const Clientes = () => {
 
@@ -47,7 +47,7 @@ const Clientes = () => {
                 <AdicionarClientes />
             </div>
             {
-                isLoading ? <PlayersTableSkeleton /> 
+                isLoading ? <TableSkeleton /> 
                 :
                 <Table className=" rounded-md border mt-5">
                     <TableHeader>

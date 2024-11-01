@@ -4,11 +4,11 @@ import { useAuthRedirect } from "@/middlewares/authRedirect";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
-import { PlayersTableSkeleton } from "../players/players-table-skeleton";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import ProdutosTableRow from "./produtos-table-row";
 import ProdutosTableFilters from "./produtos-table-filters";
 import CadastrarProdutos from "./produtos-adicionar";
+import { TableSkeleton } from "@/components/table-skeleton";
 
 const Produtos = () => {
 
@@ -55,7 +55,7 @@ const Produtos = () => {
                 <CadastrarProdutos />
             </div>
             {
-                isLoading ? <PlayersTableSkeleton /> 
+                isLoading ? <TableSkeleton /> 
                 :
                 <Table className=" rounded-md border mt-5">
                     <TableHeader>
