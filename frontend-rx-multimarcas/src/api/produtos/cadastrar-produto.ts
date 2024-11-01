@@ -9,7 +9,17 @@ export interface CadastrarProdutoBody {
 
 export async function CadastrarProduto({ nome, descricao, preco, quantidadeDisponivel }: CadastrarProdutoBody) {
     try {
-        const response = await api.post('/cadastrar_produto', { nome, descricao, preco, quantidadeDisponivel });
+        const token = localStorage.getItem('authToken');
+        if (!token) throw new Error('No token found');
+        
+        const response = await api.post('/cadastrar_produto', 
+            { nome, descricao, preco, quantidadeDisponivel },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
         return response.data;
     } catch (error: any) {
         if (error.response) {
