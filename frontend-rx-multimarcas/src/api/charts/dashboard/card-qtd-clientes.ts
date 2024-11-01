@@ -1,21 +1,20 @@
 import { api } from "@/lib/axios";
 
-export interface GraficoLtvDepositosBody {
+export interface CardQtdClientesBody {
     date_init: string;
     date_finish: string;
 }
 
-export interface GraficoLtvDepositosResponse {
-    totalAmount: number;
-    depositAmountPerMonth: { [key: string]: { amount: number, percentage: number } };
+export interface CardQtdClientesResponse {
+    quantidadeTotalClientes: number;
 }
 
-export async function GraficoLtvDepositosBody({ date_init, date_finish }: GraficoLtvDepositosBody) {
+export async function CardQtdClientesBody({ date_init, date_finish }: CardQtdClientesBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await api.post<GraficoLtvDepositosResponse>("/grafico_ltv_deposits", {
+        const response = await api.post<CardQtdClientesResponse>("/qtd_clientes", {
             date_init,
             date_finish
         }, {
