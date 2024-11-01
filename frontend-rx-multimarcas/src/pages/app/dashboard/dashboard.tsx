@@ -5,6 +5,7 @@ import CardQtdVendas from "./card-qtd-vendas";
 import CardQtdClientes from "./card-qtd-clientes";
 import React from "react";
 import { DatePickerWithRange } from "@/components/date-ranger-picker";
+import GraficoVendaTotalPorMes from "./grafico-total-vendas-por-mes";
 
 
 export function Dashboard(){
@@ -23,11 +24,11 @@ export function Dashboard(){
     return (
         <div>
             <Helmet title="Dashboard"/>
-            <div className="grid grid-cols-12 p-5">
-                
-                <div className="col-span-12 mb-4 items-end">
+            <div className="grid grid-cols-12 border rounded-md p-3 shadow-md">
+
+                <div className="col-span-12 mb-4 flex justify-end">
                     <DatePickerWithRange
-                        className="col-span-4 mb-4 flex justify-end items-center"
+                        className="mt-3"
                         value={{ from: dateRange.from, to: dateRange.to }}
                         onChange={(range) => {
                             if (range?.from && range?.to) {
@@ -36,13 +37,19 @@ export function Dashboard(){
                         }}
                     />
                 </div>
-                <div className="col-span-12 flex">
-                    <CardReceitaTotal dateRange={dateRange}/>
-                    <CardQtdVendas dateRange={dateRange}/>
-                    <CardQtdClientes dateRange={dateRange}/>
+
+                <div className="col-span-12 flex w-full space-x-4">
+                    <CardReceitaTotal dateRange={dateRange} />
+                    <CardQtdVendas dateRange={dateRange} />
+                    <CardQtdClientes dateRange={dateRange} />
                 </div>
-            
+
+                <div className="col-span-12  mt-4">
+                    <GraficoVendaTotalPorMes />
+                </div>
+
             </div>
         </div>
+
     )
 }

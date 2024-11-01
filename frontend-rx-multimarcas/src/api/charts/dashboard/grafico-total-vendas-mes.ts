@@ -1,20 +1,26 @@
 import { api } from "@/lib/axios";
 
-export interface GraficoTicketMedioBody {
-    ano: string;
+export interface GraficoTotalVendasPorMesBody {
+    date_init: string;
+    date_finish: string;
 }
 
-export interface GraficoTicketMedioResponse {
-    averageTicket: { [key: string]: { qtd_jogadores: number, totalAmount: number, average: number, twentyPercentAverage: number } };
+export interface GraficoTotalVendasPorMesResponse {
+    dados: { 
+        result: {
+            mes: string;
+            valorTotal: number;
+        }[]
+    };
 }
 
-export async function GraficoTicketMedioBody({ ano }: GraficoTicketMedioBody) {
+export async function GraficoTotalVendasPorMesBody({ date_init, date_finish }: GraficoTotalVendasPorMesBody) {
     try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await api.post<GraficoTicketMedioResponse>("/grafico_ticket_medio", {
-            ano
+        const response = await api.post<GraficoTotalVendasPorMesResponse>("/valor_total_vendas_por_mes", {
+            date_init, date_finish
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
