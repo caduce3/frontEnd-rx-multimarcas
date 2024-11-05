@@ -16,20 +16,23 @@ import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+
+const enderecoSchema = z.object({
+    rua: z.string().min(4, "O campo 'Rua' deve conter pelo menos 4 caracteres"),
+    numero: z.string().min(1, "O campo 'Número' é obrigatório"),
+    bairro: z.string().min(1, "O campo 'Bairro' é obrigatório"),
+    cidade: z.string().min(1, "O campo 'Cidade' é obrigatório"),
+    estado: z.string().min(1, "O campo 'Estado' é obrigatório"),
+    cep: z.string().min(8, "O campo 'CEP' deve conter pelo menos 8 caracteres"),
+});
+
 // Definir schema para cadastrar um cliente
 const adicionarClienteSchema = z.object({
     nome: z.string().min(4, { message: "O nome deve ter pelo menos 4 caracteres." }),
     email: z.string().email({ message: "Endereço de e-mail inválido." }),
     cpf: z.string().length(14, { message: "O CPF deve estar no formato XXX.XXX.XXX-XX." }),
     telefone: z.string().length(15, { message: "O telefone deve estar no formato (XX) XXXXX-XXXX." }),
-    endereco: z.object({
-        rua: z.string().min(4),
-        numero: z.string().min(1),
-        bairro: z.string().min(4),
-        cidade: z.string().min(4),
-        estado: z.string().min(2),
-        cep: z.string().length(9, { message: "O CEP deve estar no formato XXXXX-XXX." }),
-    }).optional()
+    endereco: enderecoSchema.optional()
 });
 
 type AdicionarClienteFormValues = z.infer<typeof adicionarClienteSchema>;
@@ -42,14 +45,7 @@ const AdicionarClientes = () => {
             email: "",
             cpf: "",
             telefone: "",
-            endereco: {
-                rua: "",
-                numero: "",
-                bairro: "",
-                cidade: "",
-                estado: "",
-                cep: ""
-            }
+            endereco: undefined 
         }
     });
 
@@ -63,6 +59,7 @@ const AdicionarClientes = () => {
         setIsSubmitting(true);
 
         try {
+
             await adicionarClienteFn(values);
             toast.success("Cliente criado com sucesso!");
             queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("clientes") });
@@ -71,15 +68,17 @@ const AdicionarClientes = () => {
                 email: "",
                 telefone: "",
                 cpf: "",
-                endereco: {
+                endereco: values.endereco ? {
                     rua: "",
                     numero: "",
                     bairro: "",
                     cidade: "",
                     estado: "",
                     cep: ""
-                }
+                } : undefined 
             });
+            //fechar o modal
+            setIsOpen(false);
         } catch (error: any) {
             const errorMessage = error instanceof Error ? error.message : "Erro inesperado ao cadastrar cliente.";
             toast.error(errorMessage);
