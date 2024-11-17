@@ -1,9 +1,13 @@
-> # Documentação API - **api-rx-multimarcas**
+> # Documentação - front-rx-multimarcas
 > 
 > ## Descrição
-> Esta é a documentação básica da API **api-rx-multimarcas**, desenvolvida para gerenciar vendas e controle de estoque de uma loja de roupas. A API foi construída utilizando **Fastify**, **Prisma ORM** e outras bibliotecas auxiliares. O backend oferece endpoints para gerenciar funcionários, vendas, e o estoque de produtos. 
+> O **front-rx-multimarcas** é uma aplicação de gerenciamento de clientes desenvolvida para o sistema de vendas de uma loja multimarca. Ele oferece uma interface simples e eficiente para cadastro e consulta de clientes, com integração ao backend para persistência e autenticação de dados.
+> BackEnd da aplicação: https://github.com/caduce3/api-rx-multimarcas
 > 
-> **Frontend da aplicação**: [https://github.com/caduce3/frontEnd-rx-multimarcas](https://github.com/caduce3/frontEnd-rx-multimarcas)
+> ---
+> 
+> ## Descrição do Projeto
+> Esta documentação se refere ao frontend da aplicação **front-rx-multimarcas**, desenvolvida com **React**, **Vite**, **Tailwind CSS**, **ShadCN UI** e outras bibliotecas auxiliares. A aplicação utiliza **React Query** para gerenciamento de estados e **Axios** para comunicação com a API backend.
 > 
 > ---
 > 
@@ -11,34 +15,42 @@
 > 
 > - **Node.js**: >= 18
 > - **Gerenciador de pacotes**: npm ou yarn
+> - **Vite**: Ferramenta para build de frontend rápido.
 > 
 > ---
 > 
 > ## Scripts Disponíveis
 > 
-> - `npm run dev`: Inicia o servidor em modo de desenvolvimento com **Hot Reload**.
-> - `npm run build`: Compila o código TypeScript para JavaScript na pasta build.
-> - `npm start`: Inicia o servidor utilizando o código compilado.
+> - `npm run dev`: Inicia o servidor de desenvolvimento com **Vite**.
+> - `npm run build`: Compila o código TypeScript e cria os arquivos de build.
+> - `npm run lint`: Executa a verificação de linting no código com **ESLint**.
+> - `npm run preview`: Inicia o servidor para visualizar a build de produção localmente.
 > 
 > ---
 > 
 > ## Dependências Principais
 > 
-> - **Fastify**: Framework web rápido e focado em performance.
-> - **Prisma ORM**: ORM para gerenciar o banco de dados.
-> - **bcryptjs**: Para hash de senhas.
-> - **pg**: Driver PostgreSQL.
-> - **zod**: Validação de dados.
+> - **React**: Biblioteca para construção da interface do usuário.
+> - **Vite**: Ferramenta de build para aplicações frontend.
+> - **Tailwind CSS**: Framework de CSS utilitário para estilização.
+> - **ShadCN UI**: Biblioteca de componentes de interface de usuário com design intuitivo e altamente personalizável.
+> - **Axios**: Cliente HTTP para requisições à API backend.
+> - **React Query**: Biblioteca para gerenciamento de estados e cache de dados.
+> - **React Router DOM**: Gerenciamento de rotas no React.
+> - **Zod**: Biblioteca de validação de dados.
+> - **Lucide React**: Ícones para a interface.
+> - **Sonner**: Biblioteca para exibição de notificações.
+> - **React Hook Form**: Biblioteca para gerenciamento de formulários de forma eficiente.
 > 
 > ---
 > 
-> ### Instalação e Execução
+> ### Instalação e execução
 > 
 > 1. Clone o repositório:
 > 
 > ```bash
 > git clone <url-do-repositorio>
-> cd api-rx-multimarcas
+> cd front-rx-multimarcas
 > ```
 > 
 > 2. Instale as dependências:
@@ -47,13 +59,7 @@
 > npm install
 > ```
 > 
-> 3. Configure o banco de dados:
-> 
-> ```bash
-> npx prisma migrate dev
-> ```
-> 
-> 4. Execute o servidor em modo de desenvolvimento:
+> 3. Execute o servidor em modo de desenvolvimento:
 > 
 > ```bash
 > npm run dev
@@ -61,76 +67,70 @@
 > 
 > ---
 > 
-> ### Pontos Importantes
+> ### Configuração do Ambiente
 > 
-> 1. Crie um `.env` igual ao `.env.example`:
+> Crie um arquivo `.env` com base no `.env.example` fornecido no repositório:
 > 
 > ```env
-> NODE_ENV=dev
-> DATABASE_CLIENT=pg
-> DATABASE_URL="postgresql://postgres:(SENHA)@localhost:(N°_DA_PORTA)/(NOME_DO_BANCO_DE_DADOS)?schema=public"
-> NODE_VERSION=20.15.0
-> JWT_SECRET="SUA_CHAVE_JWT_SECRETE"
-> URL_TESTE_FRONT="http://localhost:(n° porta)"
+> VITE_API_URL="http://localhost:3333"
+> VITE_ENABLE_API_DELAY="true"
 > ```
+> 
+> - **VITE_API_URL**: URL da API backend.
+> - **VITE_ENABLE_API_DELAY**: Configura se o atraso da API deve ser habilitado para fins de desenvolvimento.
 > 
 > ---
 > 
-> ## Endpoints
+> ## Funcionalidades
 > 
-> ### 1° Cadastrar Funcionário
-> 
-> - **POST** `/funcionario`
-> - **Descrição**: Endpoint para cadastrar um novo funcionário. O status do funcionário será registrado como **INATIVO** inicialmente, e para que o acesso seja liberado, é necessário acessar o banco de dados e ativar manualmente o funcionário.
-> - **Body**:
-> 
-> ```json
-> {
->   "nome": "string",
->   "email": "string",
->   "senha": "string",
->   "cpf": "string",
->   "telefone": "string"
-> }
-> ```
-> 
-> - **Resposta de Sucesso (200)**:
-> 
-> ```json
-> {
->   "message": "Funcionário cadastrado com sucesso! Para ativar o acesso, acesse o banco de dados e altere o status para ATIVO."
-> }
-> ```
-> 
-> - **Descrição da Resposta**: Caso o cadastro do funcionário seja bem-sucedido, será retornada a mensagem de sucesso junto com a instrução para ativar o acesso do funcionário, acessando diretamente o banco de dados e alterando seu status para **ATIVO**. Durante o desenvolvimento, o status do funcionário será configurado como **INATIVO** por padrão.
+> - **Autenticação**: A aplicação permite o login de usuários, gerando e armazenando tokens JWT para autenticação nas requisições subsequentes.
+> - **Interação com API**: Realiza requisições para a API backend utilizando **Axios**, com o suporte do **React Query** para cache e gerenciamento de estados assíncronos.
+> - **Formulários**: Utiliza **React Hook Form** para manipulação eficiente de formulários, com validações feitas com **Zod**.
+> - **Interfaces com ShadCN UI**: A interface da aplicação é construída utilizando os componentes oferecidos pelo **ShadCN UI**, proporcionando um design moderno e consistente.
 > 
 > ---
 > 
-> ### 2° Autenticação
+> ---
 > 
-> - **POST** `/sessions`
-> - **Descrição**: Endpoint para autenticação, que gera um token JWT.
-> - **Body**:
+> ## Dependências de Desenvolvimento
 > 
-> ```json
-> {
->   "email": "string",
->   "senha": "string"
-> }
-> ```
+> As dependências de desenvolvimento incluem ferramentas como **TypeScript**, **ESLint**, e **Prettier** para garantir a qualidade e padronização do código:
 > 
-> - **Resposta de Sucesso (200)**:
-> 
-> ```json
-> {
->   "token": "jwt_token_aqui"
-> }
-> ```
-> 
-> - **Descrição da Resposta**: Caso o email e a senha estejam corretos, o servidor retornará um token JWT que pode ser utilizado para autenticação nas demais rotas da API.
+> - **TypeScript**: Para tipagem estática e segurança no desenvolvimento.
+> - **ESLint**: Ferramenta para análise estática do código e detecção de erros.
+> - **Prettier**: Formatação automática do código.
+> - **Vite Plugin React**: Suporte para desenvolvimento com React no Vite.
 > 
 > ---
 > 
-> ## Notas Adicionais
+> ## Exemplos de Uso
 > 
-> - A API é projetada para gerenciar um sistema de vendas de roupas, com endpoints para cadastrar funcionários, gerenciar produtos no estoque, e realizar o controle de vendas. O uso do **Prisma ORM** permite uma integração eficiente com o banco de dados, e as rotas da API são protegidas por autenticação JWT, garantindo segurança nas operações.
+> - **Cadastro de Funcionário**: Realiza o cadastro de funcionários através da API, retornando os dados do funcionário cadastrado.
+> 
+> Exemplo de requisição utilizando **Axios**:
+> 
+> ```ts
+> import { api } from "@/lib/axios";
+> 
+> export interface RegisterFuncionarioBody {
+>     nome: string;
+>     email: string;
+>     senha: string;
+>     cpf: string;
+>     telefone: string;
+> }
+> 
+> export async function registerFuncionario({ nome, email, senha, cpf, telefone }: RegisterFuncionarioBody) {
+>     try {
+>         const response = await api.post('/funcionario', { nome, email, senha, cpf, telefone });
+>         return response.data;
+>     } catch (error: any) {
+>         // console.error('Error registering user:', error);
+>         if (error.response) {
+>             throw new Error(error.response.data?.message || 'Erro ao cadastrar colaborador.');
+>         } else {
+>             throw new Error('Erro ao conectar com o servidor');
+>         }
+>     }
+> }
+> ```
